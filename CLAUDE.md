@@ -27,7 +27,9 @@ Muneeb rejects generic AI design on sight. Avoid all of these unless you can def
 - **Use parallel subagents** for research and for producing alternative directions. Give each a narrow brief and a clear output file. Keep your own context for synthesis and decisions.
 - **Research is open-ended but directed.** Muneeb named Framer as one source he knows. Do not stop there. Find out what exists now: what is new, what is free, what top brands in any industry are doing, which tools and libraries are worth using. Judge everything against the "office glass" direction and Corpafly's buyers.
 - **Decide.** For every major choice, record the options you considered, what you picked and why, in `DECISIONS.md`.
-- **Commit often** with clear messages. Push to `main` at each gate so Muneeb can review on GitHub.
+- **Run unattended until a gate.** Muneeb is away while you work. Do not stop to ask questions between gates. Make the most sensible assumption, log it in `DECISIONS.md` under "Assumptions", and keep going. Only stop early if you are truly blocked.
+- **Be efficient.** Credits are limited. Research subagents return tight findings (about 1,200 words each, with links), not essays. Don't repeat work.
+- **Commit often** with clear messages. **Push to `main` after every phase**, not just at gates, so progress can be checked on GitHub.
 - **Stop at every gate.** At a gate, write a short summary (what you made, where to look, what you need from Muneeb), then wait.
 
 ## Phases and gates
@@ -49,11 +51,14 @@ Output: `research/REPORT.md` with an executive summary first, then findings, the
 
 ### Phase 2: Brand book and three directions
 - `brand/BRAND-BOOK.md` plus a visual `brand/brand-book.html`: logo usage and clear space, colour system with exact values (sampled from the real logo), type system, glass material rules (blur, tint, border, highlight, when allowed), motion rules (durations, easing, what moves, reduced-motion behaviour), photography and product imagery style, iconography, voice and copy rules.
+- **Logo as SVG:** recreate the CF mark and wordmark as clean, faithful SVGs in `brand/logo/` (trace the real logo, do not redesign it). Full colour, black, and white versions. Use these everywhere.
 - **Three distinct homepage directions** in `prototypes/direction-a/`, `direction-b/`, `direction-c/`. Each is a standalone static page (HTML, CSS, minimal JS), real Corpafly content and products, desktop and mobile, with its motion working. Directions must differ in concept, not just colour.
+- **Paths must be relative** so every prototype works on GitHub Pages at `https://muneebhash.github.io/Corpafly-theme/`.
+- **Imagery:** use the images in `brand/assets/`. Where good product photos are missing, use clearly labelled placeholders or tasteful product visuals built in code. Never pull stock photos or images from other sites. Write a short photo brief in the brand book for a future shoot.
 - Each direction gets a `README.md`: the idea in two sentences, what is glass, what moves, why it fits Corpafly buyers.
-- Screenshots of each at 1440px and 390px wide in `prototypes/screens/`.
+- Screenshots of each at 1440px and 390px wide in `prototypes/screens/` (install a headless browser if needed).
 
-**GATE 1: stop.** Summarise the research in ten lines, show the three directions, give your recommendation, and wait for Muneeb's pick and notes.
+**GATE 1: stop.** Summarise the research in ten lines, show the three directions with their GitHub Pages links and screenshot paths, give your recommendation, and wait for Muneeb's pick and notes.
 
 ### Phase 3: Full design of the chosen direction
 Static prototypes in `prototypes/final/`: home, collection, product (pack, colour, quantity, price per unit, break-away explainer), cart drawer, about, FAQ, contact, 404, and the password page. Desktop and mobile.
