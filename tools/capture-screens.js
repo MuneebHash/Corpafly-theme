@@ -29,6 +29,15 @@ const outDir = path.join(__dirname, '..', 'prototypes', 'screens');
       });
       await page.waitForTimeout(900);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      // Full-page captures print fixed and sticky bars mid-page; pages may honour ?capture to park them.
+      await page.goto(`${base}/prototypes/${name}/?capture`, { waitUntil: 'networkidle' });
+      await page.evaluate(async () => {
+        for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight * 0.6) {
+          scrollTo(0, y); await new Promise((r) => setTimeout(r, 140));
+        }
+        scrollTo(0, 0);
+      });
+      await page.waitForTimeout(900);
       await page.screenshot({ path: path.join(outDir, `${name}-${w}.jpg`), fullPage: true, type: 'jpeg', quality: 86 });
       console.log(`${name} @${w}: horizontal overflow ${overflow}px${errors.length ? ' | errors: ' + errors.join(' | ') : ''}`);
       await page.close();

@@ -44,7 +44,7 @@
 ### 3. Tools and licences
 
 - **Fonts:** every Google Fonts candidate is SIL OFL 1.1 and can be self-hosted. Avoid faces that are another company's identity (Geist, Mona Sans, Red Hat, IBM Plex) and Fontshare's ITF licence, which bans subsetting and redistribution, a problem for a public repo. Pangram Pangram is personal-use only.
-- **Picked for the prototypes:** Instrument Sans with Fragment Mono; Archivo (width axis) with Martian Mono; Atkinson Hyperlegible Next with its Mono. All OFL, licence files in `prototypes/shared/fonts/`.
+- **Picked for the prototypes:** Instrument Sans with Fragment Mono; Archivo (width axis) with Martian Mono; Hanken Grotesk (Atkinson Hyperlegible was tried first and dropped in Phase 2 for its slashed zero). All OFL, licence files in `prototypes/shared/fonts/`.
 - **Icons:** Phosphor (MIT), functional icons only. Remix Icon changed to a restrictive licence in Jan 2026; Lucide and Heroicons carry the default shadcn and Tailwind look.
 - **Components:** shadcn, Radix, Magic UI and friends need React: ideas only. Origin UI moved to AGPL-3.0. Horizon's web components are the best code source, licensed for Shopify themes.
 - **AI and design tools:** none output Liquid except Shopify's own. Sidekick can generate theme blocks where sections accept `@theme` blocks; Canvas edits make a theme non-downloadable, so duplicate first.

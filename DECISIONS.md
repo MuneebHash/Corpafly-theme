@@ -46,7 +46,8 @@ Every major choice: the options considered, the pick, and why. Assumptions made 
 
 ### D9. Type
 - **Options considered:** 18 free families set against the real wordmark (specimen rendered and compared).
-- **Picked:** one OFL pairing per direction: Instrument Sans + Fragment Mono (A), Archivo + Martian Mono (B), Atkinson Hyperlegible Next + Mono (C). The final pick follows the Gate 1 direction.
+- **Picked:** one OFL pairing per direction: Instrument Sans + Fragment Mono (A), Archivo + Martian Mono (B), Hanken Grotesk alone (C). The final pick follows the Gate 1 direction.
+- **Changed in Phase 2:** C first used Atkinson Hyperlegible Next + Mono. Built, its slashed zero made every price read like code ("$Ø.27") and it has no plain-zero alternate, so C moved to Hanken Grotesk, whose digits are equal-width by default.
 - **Rejected:** Inter and Space Grotesk (banned default look); Geist (default of AI site builders); Mona Sans, Red Hat, IBM Plex (other companies' identity faces); Fontshare fonts (licence bans subsetting and redistribution); Pangram Pangram (personal use only).
 
 ### D10. Icons
@@ -70,7 +71,7 @@ Every major choice: the options considered, the pick, and why. Assumptions made 
 
 | Item | Licence | Where |
 |---|---|---|
-| Instrument Sans, Fragment Mono, Archivo, Martian Mono, Atkinson Hyperlegible Next and Mono | SIL Open Font License 1.1 | `prototypes/shared/fonts/` (licence files alongside) |
+| Instrument Sans, Fragment Mono, Archivo, Martian Mono, Hanken Grotesk | SIL Open Font License 1.1 | `prototypes/shared/fonts/` (licence files alongside) |
 | Phosphor Icons 2.1.1 | MIT | `prototypes/shared/icons.svg`, `prototypes/shared/ICONS-LICENSE-phosphor.txt` |
 | Antipasto Pro (wordmark) | Commercial (Zetafonts) | Not distributed: outlined in the SVG logo only |
 | JavaScript libraries | None used | |

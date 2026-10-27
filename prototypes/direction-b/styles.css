@@ -3,14 +3,15 @@
    hairlines and Martian Mono numerals. Glass only on the header, the hero lens, the docked order bar,
    the plan card and the cart drawer. Builds on ../shared/tokens.css (colours, glass, motion tokens). */
 
-/* Display cut of Archivo: a static wdth 125 / wght 300 instance, uppercase, digits and punctuation only (4 KB),
-   built with fontTools from ../shared/fonts/archivo.woff2 (OFL 1.1, licence in fonts/). It keeps the headline,
-   the LCP element, off the 90 KB variable file. Display text is always uppercase, so nothing falls outside it. */
-@font-face {
-  font-family: "Archivo Display";
-  src: url("fonts/archivo-display.woff2") format("woff2");
-  font-weight: 300; font-stretch: 125%; font-style: normal; font-display: swap;
-}
+/* Font cuts for this page, built with fontTools from ../shared/fonts (OFL 1.1, no Reserved Font Names; licences in fonts/).
+   They hold only the axis ranges and glyphs used here (basic Latin plus the copyright sign, middle dot and times sign),
+   so the first screen needs 31 KB of fonts instead of 133 KB. Anything outside them falls back to the full shared faces.
+   - Archivo Display: static wdth 125 / wght 300, uppercase, digits and punctuation (4 KB). Display text is always uppercase.
+   - Archivo UI: variable wght 400 to 500, wdth 100 to 112.5 (19 KB). Body and UI.
+   - Martian UI: wdth 87.5, variable wght 400 to 500 (8 KB). Labels, codes and numerals. */
+@font-face { font-family: "Archivo Display"; src: url("fonts/archivo-display.woff2") format("woff2"); font-weight: 300; font-stretch: 125%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Archivo UI"; src: url("fonts/archivo-ui.woff2") format("woff2"); font-weight: 400 500; font-stretch: 100% 112.5%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Martian UI"; src: url("fonts/martian-ui.woff2") format("woff2"); font-weight: 400 500; font-stretch: 87.5%; font-style: normal; font-display: swap; }
 
 /* ---------- Direction tokens ---------- */
 :root {
@@ -20,9 +21,9 @@
   --vellum: var(--n-25);
   --rule: rgba(5, 3, 1, 0.22);                    /* plate edges, table heads */
   --hair: rgba(5, 3, 1, 0.10);                    /* inner rules */
-  --font-sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Archivo UI", "Archivo", "Helvetica Neue", Arial, sans-serif;
   --font-display: "Archivo Display", "Archivo", "Helvetica Neue", Arial, sans-serif;   /* uppercase, 125% width, weight 300 */
-  --font-mono: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-mono: "Martian UI", "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Lattice tiles. Lines run past the tile so the joins at tile corners stay continuous. */
   --lattice-ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M-6 -6L30 30M30 -6L-6 30' stroke='%23050301' stroke-opacity='.06' fill='none'/%3E%3C/svg%3E");
@@ -61,6 +62,7 @@ a { color: inherit; }
 button, input { font: inherit; color: inherit; }
 button { cursor: pointer; }
 h1, h2, h3 { margin: 0; font-weight: inherit; }
+b, strong, th { font-weight: 500; }   /* UI weight; the font cut stops at 500 */
 p { margin: 0; }
 fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 legend { padding: 0; }
@@ -238,8 +240,14 @@ legend { padding: 0; }
 
 /* ---------- Hero ---------- */
 .hero {
+  /* The mark is placed from the lens: it starts 28 px right of the lens (never under the glass, so the blur makes
+     no glow), and on very wide screens it still crops at least 26% off the right edge. */
+  --hero-h: clamp(640px, 100svh, 1080px);
+  --lens-w: 620px;
+  --mark-h: calc(var(--hero-h) * 1.18);
+  --mark-top: -9%;
   position: relative; isolation: isolate; overflow: clip;
-  height: clamp(640px, 100svh, 1080px);
+  height: var(--hero-h);
   color: #fff;
   background-color: var(--teal-950);
   background-image: var(--lattice-white);
@@ -249,10 +257,12 @@ legend { padding: 0; }
 .hero__art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .hero__mark {
   position: absolute;
-  height: 118%; width: auto; max-width: none; aspect-ratio: 201.95 / 196.53;
-  top: -9%; left: 44%;
+  height: var(--mark-h); width: auto; max-width: none; aspect-ratio: 201.95 / 196.53;
+  top: var(--mark-top);
+  left: max(calc(max(var(--gutter), (100% - var(--maxw)) / 2) + var(--lens-w) + 28px), calc(100% - var(--mark-h) * 0.76));
   overflow: visible;
 }
+@media (max-width: 1199px) { .hero { --lens-w: 520px; --mark-h: calc(var(--hero-h) * 1.04); --mark-top: -2%; } }
 /* The mark in a dark key: brand teal deepened to teal-700, the F stays black with a 1px rim so it reads on the dark field */
 .mk--c path, .mk-whole__c { fill: var(--teal-700); }
 .mk--f path, .mk-whole__f { fill: var(--cf-black); }
@@ -268,7 +278,7 @@ legend { padding: 0; }
   --cut: 32px;
   --edge: var(--glass-dark-edge);
   container-type: inline-size;
-  width: min(620px, 100%);
+  width: min(var(--lens-w), 100%);
   padding: 40px 44px 36px;
   border-radius: 0;
 }
@@ -297,7 +307,7 @@ legend { padding: 0; }
 @media (max-width: 899px) {
   .hero { height: auto; min-height: 100svh; }
   /* Phones: the mark crops into the top-right corner; the strap and hook sit above the lens, the C runs on under the glass */
-  .hero__mark { height: auto; width: 172%; top: -140px; left: 28%; }
+  .hero__mark { height: auto; width: clamp(560px, 172%, 760px); top: -140px; left: 28%; }
   .hero__inner { align-items: flex-end; min-height: 100svh; padding-top: calc(var(--header-h) + 270px); padding-bottom: 16px; }
   .hero .lens { width: 100%; padding: 28px 22px 24px; --cut: 24px; }
   .hero__sub { font-size: 1rem; }

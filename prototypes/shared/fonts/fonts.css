@@ -13,7 +13,12 @@
 @font-face { font-family: "Archivo"; src: url("archivo-italic.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; font-display: swap; }
 @font-face { font-family: "Martian Mono"; src: url("martian-mono.woff2") format("woff2"); font-weight: 100 800; font-stretch: 75% 112.5%; font-style: normal; font-display: swap; }
 
-/* Direction C: Atkinson Hyperlegible Next (everything), Atkinson Hyperlegible Mono (quantities, totals) */
+/* Direction C: Hanken Grotesk (everything). Its digits are tabular by default, so totals align and roll cleanly,
+   and its zero is plain (Atkinson Hyperlegible's slashed zero made prices read like code). */
+@font-face { font-family: "Hanken Grotesk"; src: url("hanken-grotesk.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Hanken Grotesk"; src: url("hanken-grotesk-italic.woff2") format("woff2"); font-weight: 100 900; font-style: italic; font-display: swap; }
+
+/* Superseded for Direction C (kept only until the switch lands): Atkinson Hyperlegible Next and Mono */
 @font-face { font-family: "Atkinson Hyperlegible Next"; src: url("atkinson-hyperlegible-next.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
 @font-face { font-family: "Atkinson Hyperlegible Next"; src: url("atkinson-hyperlegible-next-italic.woff2") format("woff2"); font-weight: 200 800; font-style: italic; font-display: swap; }
 @font-face { font-family: "Atkinson Hyperlegible Mono"; src: url("atkinson-hyperlegible-mono.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }

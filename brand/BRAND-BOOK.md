@@ -121,7 +121,7 @@ One-colour versions keep a thin knockout where the F crosses the C, so the lette
 |---|---|---|---|
 | A, Clear Sleeve | Instrument Sans | Fragment Mono | Neutral, precise grotesk with a width axis for dense UI; a quiet mono makes prices read like a spec |
 | B, Diamond Grid | Archivo, expanded 125% for display | Martian Mono | Light expanded capitals echo the wide, thin wordmark; mono labels read like a datasheet |
-| C, Order Desk | Atkinson Hyperlegible Next | Atkinson Hyperlegible Mono | Built for legibility: unambiguous 0, O, 1, l and I where buyers read quantities and totals |
+| C, Order Desk | Hanken Grotesk | Hanken Grotesk (its digits are tabular by default) | Crisp, legible grotesk; equal-width digits so totals align and update cleanly; a plain zero (Atkinson Hyperlegible was tried and dropped: its slashed zero made prices read like code) |
 
 Not used, on purpose: Inter and Space Grotesk (the default look), Geist (the default of AI site builders), Mona Sans, Red Hat and IBM Plex (other companies' identity faces), Fontshare fonts (their licence bans subsetting and redistribution).
 

@@ -241,7 +241,7 @@ moreBtn.addEventListener('click', () => {
   const before = packOf(order.type, order.size).colors;
   $('input[name="type"][value="breakaway"]', builder).checked = true;
   reconfigure('breakaway', 25);
-  // The link disappears in the 25 pack, so move focus to the first colour it unlocked.
+  // The link disappears in the 25 pack, so move focus to the first colour it added.
   const first = packOf('breakaway', 25).colors.find((c) => !before.includes(c));
   $(`.row[data-color="${first}"] .stepper__val`, rowsEl)?.focus();
 });
