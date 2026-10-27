@@ -303,7 +303,7 @@ function initHeroStrap() {
 }
 
 /* =========================================================================================
-   Range plates: a coloured drawing with 45-degree leaders, named chips, an Add per pack row
+   Range plates: a colored drawing with 45-degree leaders, named chips, an Add per pack row
    ========================================================================================= */
 // Lanyard placed at (20, -10) inside a 500 x 520 field. Leaders run at 45 degrees, then flat into the label column (x = 61%).
 function plateDrawing(type) {
@@ -352,7 +352,7 @@ function initPlates() {
 }
 
 /* =========================================================================================
-   Order bar (pack, colour, packs, live price per lanyard) and its docked glass state
+   Order bar (pack, color, packs, live price per lanyard) and its docked glass state
    ========================================================================================= */
 const order = { handle: 'break-away-lanyard', size: 100, color: 'blue', qty: 1 };
 const form = $('[data-order]');
@@ -373,7 +373,7 @@ function renderColorOptions() {
   const pack = packOf(order.handle, order.size);
   if (!pack.colors.includes(order.color)) order.color = pack.colors[0];
   $('[data-color-options]', form).innerHTML = pack.colors.map((k) => `<label class="swatch"><input type="radio" name="color" value="${k}"${k === order.color ? ' checked' : ''}><span class="swatch__dia" style="--strap:${COLORS[k].hex}"></span><span class="swatch__name">${COLORS[k].name}</span></label>`).join('');
-  // "4 more colors in the 25 pack" when a bigger break-away pack carries fewer colours
+  // "4 more colors in the 25 pack" when a bigger break-away pack carries fewer colors
   const product = byHandle[order.handle];
   const widest = product.packs.reduce((a, b) => (b.colors.length > a.colors.length ? b : a));
   const more = $('[data-more-colors]', form);
@@ -396,7 +396,8 @@ function updateOrder() {
   $('[data-order-qty]', form).value = order.qty;
   $('[data-step="-1"]', form).disabled = order.qty <= 1;
   // The docked copy
-  $('[data-dock-line]').textContent = `${name} · ${order.handle === 'lanyard' ? 'Lanyard' : 'Break-Away'} · ${order.size} pack × ${order.qty}`;
+  // Non-breaking spaces keep "100 pack × 2" together when the line wraps on a phone
+  $('[data-dock-line]').textContent = `${name} · ${order.handle === 'lanyard' ? 'Lanyard' : 'Break-Away'} · ${order.size}\u00A0pack\u00A0×\u00A0${order.qty}`;
   $('[data-dock-total]').textContent = total;
   $('[data-dock-each]').textContent = `${money(each)} each`;
   $('[data-dock-swatch]').style.setProperty('--strap', COLORS[order.color].hex);
@@ -498,10 +499,10 @@ function initClaspDrawing() {
 }
 
 /* =========================================================================================
-   Colour coding planner: groups get colours (swap on clash), headcounts become the cheapest pack mix
+   Color coding planner: groups get colors (swap on clash), headcounts become the cheapest pack mix
    ========================================================================================= */
 const planner = {
-  handle: 'break-away-lanyard', // the only line made in all six colours
+  handle: 'break-away-lanyard', // the only line made in all six colors
   selected: 'staff',
   groups: [
     { id: 'staff', name: 'Staff', count: 40, color: 'black' },
@@ -511,7 +512,7 @@ const planner = {
   ],
 };
 
-// Cheapest set of packs (made in this colour) that covers n people. Ties go to fewer spares, then fewer packs.
+// Cheapest set of packs (made in this color) that covers n people. Ties go to fewer spares, then fewer packs.
 // Every pack size is a multiple of 25, so the search runs in 25-lanyard units with exact cents.
 function bestPacks(color, n) {
   if (n <= 0) return null;
@@ -557,7 +558,7 @@ function renderPlanner() {
     input.setAttribute('aria-label', `${COLORS[input.value].name}${owner ? `, used by ${owner.name}` : ''}`);
   }
 
-  // Line-up: one lanyard per group in its colour
+  // Line-up: one lanyard per group in its color
   for (const g of planner.groups) {
     const item = $(`[data-lineup-item="${g.id}"]`, root);
     item.style.setProperty('--strap', COLORS[g.color].hex);
@@ -583,11 +584,11 @@ function renderPlanner() {
 function initPlanner() {
   const root = $('[data-planner]');
   if (!root) return;
-  // Build the line-up once; colours and labels update in place so the strap colour can glide (@property --strap)
+  // Build the line-up once; colors and labels update in place so the strap color can glide (@property --strap)
   $('[data-lineup]', root).innerHTML = planner.groups.map((g) => `<div class="lineup__item" data-lineup-item="${g.id}"><p class="lineup__label mono"></p>${hangingLanyard({ type: 'breakaway', title: '' }).svg}</div>`).join('');
 
-  // Colour swaps are worked out against a snapshot taken when a group is picked. Arrow keys move through a radio
-  // group by selecting each colour in turn, so without this, arrowing past a colour would reshuffle other groups.
+  // Color swaps are worked out against a snapshot taken when a group is picked. Arrow keys move through a radio
+  // group by selecting each color in turn, so without this, arrowing past a color would reshuffle other groups.
   let snapshot = Object.fromEntries(planner.groups.map((g) => [g.id, g.color]));
   const takeSnapshot = () => { snapshot = Object.fromEntries(planner.groups.map((g) => [g.id, g.color])); };
   root.addEventListener('change', (e) => {
@@ -597,7 +598,7 @@ function initPlanner() {
       for (const g of planner.groups) g.color = snapshot[g.id];
       const sel = planner.groups.find((g) => g.id === planner.selected);
       const other = planner.groups.find((g) => g !== sel && g.color === t.value);
-      if (other) other.color = sel.color; // swap, so every group keeps its own colour
+      if (other) other.color = sel.color; // swap, so every group keeps its own color
       sel.color = t.value;
     } else if (t.matches('[data-gcount]')) {
       const g = planner.groups.find((x) => x.id === t.closest('[data-group]').dataset.group);

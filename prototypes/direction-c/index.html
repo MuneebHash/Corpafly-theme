@@ -9,9 +9,8 @@
 <link rel="icon" href="../../brand/logo/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../brand/logo/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../brand/logo/apple-touch-icon.png">
-<!-- Only the two Atkinson faces this direction uses are fetched; both are preloaded because they set the first screen. -->
-<link rel="preload" href="../shared/fonts/atkinson-hyperlegible-next.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../shared/fonts/atkinson-hyperlegible-mono.woff2" as="font" type="font/woff2" crossorigin>
+<!-- One face for everything: Hanken Grotesk (variable). Preloaded because it sets the first screen. -->
+<link rel="preload" href="../shared/fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared/fonts/fonts.css">
 <link rel="stylesheet" href="../shared/tokens.css">
 <link rel="stylesheet" href="../shared/lanyard.css">
@@ -86,7 +85,7 @@
               </label>
               <label class="opt-card">
                 <input type="radio" name="type" value="breakaway">
-                <span class="opt-card__name">Break-Away Lanyard</span>
+                <span class="opt-card__name"><span class="nb">Break-Away</span> Lanyard</span>
                 <span class="opt-card__desc">Releases when pulled. 25, 50 or 100 pack.</span>
                 <span class="opt-card__from">from <b class="num">$0.30</b> each</span>
                 <span class="opt-card__art opt-card__art--clasp" aria-hidden="true"></span>
@@ -116,7 +115,7 @@
           </fieldset>
 
           <fieldset class="step">
-            <legend class="step__title"><span class="step__no num" aria-hidden="true">3</span>Colors and packs</legend>
+            <legend class="step__title"><span class="step__no num" aria-hidden="true">3</span>Colors and packs<span class="step__aside">Mix colors to code teams, classes or roles.</span></legend>
             <p class="notice" id="color-notice" role="status"></p>
             <ul class="rows" id="rows">
               <li class="row is-on" data-color="black" style="--strap:#1F1F1F">
@@ -156,17 +155,13 @@
                 </div>
               </li>
             </ul>
-            <p class="step__hint">Mix colors to code teams, classes or roles.</p>
-            <button type="button" class="link-btn more-colors" id="more-colors">Yellow and Purple come in the Break-Away 25 pack</button>
+            <button type="button" class="link-btn more-colors" id="more-colors">Yellow and Purple come in the <span class="nb">Break-Away</span> 25 pack</button>
           </fieldset>
 
           <!-- The tally pins to the bottom of the screen on desktop while the sheet scrolls (see styles.css). -->
           <div class="tally" id="tally">
             <div class="tally__main">
-              <div class="tally__unit">
-                <span class="tally__label">Per lanyard</span>
-                <span class="tally__big num" data-roll="unit">$0.27</span>
-              </div>
+              <p class="tally__unit"><span class="tally__big num" data-roll="unit">$0.27</span><span class="tally__per">per lanyard</span></p>
               <dl class="tally__ledger">
                 <div><dt>Packs</dt><dd class="num" data-roll="packs">1</dd></div>
                 <div><dt>Lanyards</dt><dd class="num" data-roll="lanyards">100</dd></div>
@@ -182,7 +177,6 @@
             <p class="tally__help" id="copy-status" role="status">The order link opens this exact order for a colleague, ready to check out.</p>
             <p class="visually-hidden" id="order-live" aria-live="polite" aria-atomic="true"></p>
           </div>
-          <span class="tally-end" id="tally-end" aria-hidden="true"></span>
         </form>
       </div>
 
@@ -293,8 +287,8 @@
               <div><dt>Per lanyard</dt><dd class="num">$0.27</dd></div>
               <div><dt>Total</dt><dd class="num result__total">$26.87</dd></div>
             </dl>
-            <p class="result__why">Lowest total that covers 80 people.</p>
-            <p class="result__alt">Also fits: 1 × Break-Away Lanyard, 100 pack. $29.87, 20 spare.</p>
+            <p class="result__why">The standard Lanyard, in 100 packs rounded up to cover 80 people.</p>
+            <p class="result__alt">Also fits: 1 × <span class="nb">Break-Away</span> Lanyard, 100 pack. $29.87, 20 spare.</p>
           </div>
           <button type="button" class="btn btn--primary result__use" id="use-rec">
             Use this order<svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-arrow-right"/></svg>
@@ -317,7 +311,7 @@
   <section class="section compare" id="range" aria-labelledby="compare-title">
     <div class="wrap split">
       <header class="split__head">
-        <h2 class="h2" id="compare-title">Lanyard or Break-Away Lanyard?</h2>
+        <h2 class="h2" id="compare-title">Lanyard or <span class="nb">Break-Away</span> Lanyard?</h2>
         <p class="deck">Same flat polyester strap and swivel metal J-hook. The difference is at the neck.</p>
       </header>
       <div class="sheet compare__sheet">
@@ -332,7 +326,7 @@
               </th>
               <th scope="col" role="columnheader">
                 <span class="compare__art" data-art="clasp"></span>
-                <span class="compare__name">Break-Away Lanyard</span>
+                <span class="compare__name"><span class="nb">Break-Away</span> Lanyard</span>
               </th>
             </tr>
           </thead>
@@ -376,15 +370,15 @@
             </tr>
             <tr role="row">
               <th scope="row" role="rowheader">Per lanyard, from</th>
-              <td role="cell"><span class="compare__price num">$0<span class="pt">.</span>27</span><span class="compare__per">100 pack</span></td>
-              <td role="cell"><span class="compare__price num">$0<span class="pt">.</span>30</span><span class="compare__per">100 pack. <span class="num">$0.36</span> in the 50, <span class="num">$0.43</span> in the 25.</span></td>
+              <td role="cell"><span class="compare__price num">$0.27</span><span class="compare__per">100 pack</span></td>
+              <td role="cell"><span class="compare__price num">$0.30</span><span class="compare__per">100 pack. <span class="num">$0.36</span> in the 50, <span class="num">$0.43</span> in the 25.</span></td>
             </tr>
           </tbody>
           <tfoot role="rowgroup">
             <tr role="row">
               <td role="cell"></td>
               <td role="cell"><button type="button" class="btn btn--quiet" data-load="standard-100:black.1">Order Lanyard</button></td>
-              <td role="cell"><button type="button" class="btn btn--quiet" data-load="breakaway-100:black.1">Order Break-Away</button></td>
+              <td role="cell"><button type="button" class="btn btn--quiet" data-load="breakaway-100:black.1">Order <span class="nb">Break-Away</span></button></td>
             </tr>
           </tfoot>
         </table>
@@ -397,7 +391,7 @@
   <section class="section pull" id="break-away" aria-labelledby="pull-title">
     <div class="wrap pull__grid">
       <div class="pull__copy">
-        <h2 class="h2" id="pull-title">Break-away, in plain words.</h2>
+        <h2 class="h2" id="pull-title"><span class="nb">Break-away,</span> in plain words.</h2>
         <p>The Break-Away Lanyard has a safety clasp at the back of the neck. If the strap is caught or pulled, the clasp opens and the lanyard comes off.</p>
         <p>Choose it for kids and schools, hospitals and warehouses, or anywhere a caught strap is a risk.</p>
         <dl class="pull__facts">
@@ -480,7 +474,7 @@
           <table class="spec-table">
             <caption class="visually-hidden">Specs for both lanyards</caption>
             <thead>
-              <tr><td></td><th scope="col">Lanyard</th><th scope="col">Break-Away Lanyard</th></tr>
+              <tr><td></td><th scope="col">Lanyard</th><th scope="col"><span class="nb">Break-Away</span> Lanyard</th></tr>
             </thead>
             <tbody>
               <tr><th scope="row">Strap</th><td>Flat polyester</td><td>Flat polyester</td></tr>
@@ -553,7 +547,7 @@
       <h2 id="ftr-shop">Shop</h2>
       <ul>
         <li><a href="#range">Lanyard</a></li>
-        <li><a href="#break-away">Break-Away Lanyard</a></li>
+        <li><a href="#break-away"><span class="nb">Break-Away</span> Lanyard</a></li>
         <li><a href="#order">Order desk</a></li>
       </ul>
     </nav>

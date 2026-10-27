@@ -1,7 +1,7 @@
 /* Corpafly, Direction B: "Diamond Grid".
    The CF mark is drawn on a 45-degree grid, so the page is too: a fine diamond lattice, chevron-cut plates,
    hairlines and Martian Mono numerals. Glass only on the header, the hero lens, the docked order bar,
-   the plan card and the cart drawer. Builds on ../shared/tokens.css (colours, glass, motion tokens). */
+   the plan card and the cart drawer. Builds on ../shared/tokens.css (colors, glass, motion tokens). */
 
 /* Font cuts for this page, built with fontTools from ../shared/fonts (OFL 1.1, no Reserved Font Names; licences in fonts/).
    They hold only the axis ranges and glyphs used here (basic Latin plus the copyright sign, middle dot and times sign),
@@ -132,6 +132,7 @@ legend { padding: 0; }
 .btn--block { width: 100%; }
 .btn--tall { min-height: 56px; }
 .link-btn {
+  display: inline-flex; align-items: center; min-height: 32px;   /* comfortably over the 24 px target minimum */
   padding: 4px 0; border: 0; background: none; color: var(--accent-ink);
   text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px;
 }
@@ -254,7 +255,9 @@ legend { padding: 0; }
   background-size: var(--cell) var(--cell);
   background-position: 0 0;                         /* main.js snaps the strap to this origin */
 }
-.hero__art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+/* The art stops at the header's bottom edge (bar + 1 px hairline): the header glass only ever blurs the plain lattice,
+   so the mark and strap never smear into a teal or blue glow under it. */
+.hero__art { position: absolute; inset: 0; z-index: 0; pointer-events: none; clip-path: inset(calc(var(--header-h) + 1px) 0 0 0); }
 .hero__mark {
   position: absolute;
   height: var(--mark-h); width: auto; max-width: none; aspect-ratio: 201.95 / 196.53;
@@ -309,7 +312,7 @@ legend { padding: 0; }
   /* Phones: the mark crops into the top-right corner; the strap and hook sit above the lens, the C runs on under the glass */
   .hero__mark { height: auto; width: clamp(560px, 172%, 760px); top: -140px; left: 28%; }
   .hero__inner { align-items: flex-end; min-height: 100svh; padding-top: calc(var(--header-h) + 270px); padding-bottom: 16px; }
-  .hero .lens { width: 100%; padding: 28px 22px 24px; --cut: 24px; }
+  .hero .lens { width: min(100%, 600px); padding: 28px 22px 24px; --cut: 24px; }
   .hero__sub { font-size: 1rem; }
   .hero__ctas .btn { flex: 1 1 100%; }
   .readout { grid-template-columns: 1fr 1fr; }
@@ -392,7 +395,7 @@ legend { padding: 0; }
 .leader { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .leader-dot { fill: var(--ink); }
 
-/* Named colour chips (radio group) */
+/* Named color chips (radio group) */
 .chips { display: grid; gap: 8px; align-content: center; }
 .chips legend { margin-bottom: 10px; color: var(--muted); font-size: 0.6875rem; }
 .chips legend span { color: var(--ink); }
@@ -447,7 +450,7 @@ legend { padding: 0; }
   font: 400 0.625rem/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 0 10px;
 }
 @media (max-width: 359px) {
-  .pack-table th:nth-child(2), .pack-table td:nth-child(2) { display: none; }   /* the colour chips above carry this */
+  .pack-table th:nth-child(2), .pack-table td:nth-child(2) { display: none; }   /* the color chips above carry this */
 }
 @media (max-width: 519px) {
   .pack-table th, .pack-table td { padding-inline: 4px; }
@@ -562,9 +565,12 @@ legend { padding: 0; }
 .dock__line { font-size: 0.6875rem; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dock__price b { font: 500 1rem/1.2 var(--font-mono); font-stretch: 87.5%; }
 .dock__price .mono { color: var(--ink-2); text-transform: none; letter-spacing: 0.02em; }   /* no teal text on glass: it can fall under 4.5:1 */
-.dock__ph { flex: none; }
+.dock__price .ph-tag { margin-left: 4px; }
 .dock .btn { flex: none; }
-@media (max-width: 519px) { .dock__ph { display: none; } .dock .btn { padding: 0 16px; } }
+@media (max-width: 519px) {
+  .dock .btn { padding: 0 16px; }
+  .dock__line { white-space: normal; line-height: 1.35; }   /* wrap rather than cut off the pack and quantity */
+}
 
 /* ---------- Break-away: detail drawing ---------- */
 .ba { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
@@ -769,7 +775,7 @@ legend { padding: 0; }
 .reorder__intro p { color: var(--ink-2); max-width: 42ch; }
 .reorder__title { font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem); }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--rule); align-self: start; }
-.steps li { display: grid; gap: 12px; padding: 16px 16px 0 0; }
+.steps li { display: grid; gap: 12px; align-content: start; padding: 16px 16px 0 0; }
 .steps li + li { padding-left: 16px; border-left: 1px solid var(--hair); }
 .steps__no { color: var(--accent-ink); font-size: 0.75rem; }
 .steps b { display: block; font-weight: 500; margin-bottom: 2px; }
