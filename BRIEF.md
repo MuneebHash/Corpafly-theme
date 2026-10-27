@@ -43,13 +43,19 @@ They are practical buyers. The site must feel premium and trustworthy, and buyin
 
 Seen on the Amazon brand store and in the brand files:
 
-- **Logo mark:** a "CF" monogram built from bold angled chevron strokes.
-- **Wordmark:** CORPAFLY in uppercase geometric sans, generous letter spacing.
-- **Logo variants:** white on black, black on white, and a teal-green plus black version of the mark.
-- **Colours in use:** black, white, a dark teal or petrol tone in banners, a teal-green accent from the logo. Sample exact values from the logo files in `brand/assets/`; do not guess hex codes.
+- **Logo mark:** a "CF" monogram of two overlapping bold chevron shapes: a teal "C" behind a black "F", set on a 45 degree diamond grid.
+- **Wordmark:** CORPAFLY in uppercase, thin-weight geometric sans with round O and C, wide letter spacing.
+- **Logo variants:** full colour (teal and black on white) in `Logo.png`, all black in `logo (black).png`, and white on black on the Amazon store.
+- **Brand colours, sampled from the real files:**
+  - Brand teal: **#1E806F** (logo "C", thank-you card border)
+  - Brand black: **#050301** (logo "F", wordmark)
+  - White
+  - The Amazon store banners also use a dark teal or petrol tone. Treat it as derived, not core.
 - **Photography in use:** office and corporate people wearing lanyards, product shots on solid colour circles, bold black and white type banners (for example "BLACK LANYARDS").
-- **Print:** a thank-you card exists (front and back) in `brand/assets/`.
-- **Video:** a short product video showing the lanyards as a customer receives them (`brand/assets/`).
+- **Print:** a thank-you card (front and back) in `brand/assets/`. Teal border, white panel, teal script "Thank You", uppercase body text.
+- **Amazon brand store banners:** `brand/assets/storefront-images/`. Useful to see the current look; the new site should feel a clear step up from it.
+- **Source files:** layered PSDs of the logo and card in `brand/assets/source-psd/`.
+- **Video:** a short product video exists on the Amazon listings but is not in this repo. Leave a video slot in the designs.
 - **Brand book:** none worth keeping. A new one is part of this project.
 
 ## 5. Store setup (already done, do not change)

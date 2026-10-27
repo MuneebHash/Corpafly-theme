@@ -1,16 +1,19 @@
 # Brand assets
 
-Drop the real brand files here. Claude Code reads this folder in Phase 0.
+Real Corpafly brand files. Claude Code reads this folder in Phase 0.
 
-| File | What it is | Status |
-|---|---|---|
-| `Logo.png` | Main logo | Needed |
-| `logo (black).png` | Logo, black version | Needed |
-| `Logo.jpg` | Logo, JPG version | Needed |
-| `Thankyou card (Front).jpg` | Thank-you card, front | Needed |
-| `Thankyou card (Back).jpg` | Thank-you card, back | Needed |
-| `content-887570.mp4` | Product video, about 10.6 MB | Needed |
-| `listing-images/` | Amazon listing and A+ images, one subfolder per listing | Optional |
-| `storefront-images/` | Amazon brand store banners | Optional |
+| File | What it is |
+|---|---|
+| `Logo.png` | Main logo, full colour (teal and black on white), 3000 x 3000 |
+| `logo (black).png` | Logo, all black |
+| `Logo.jpg` | Main logo, JPG |
+| `Thankyou card (Front).jpg` | Thank-you card, front |
+| `Thankyou card (Back).jpg` | Thank-you card, back |
+| `storefront-images/` | Current Amazon brand store banners and tiles |
+| `source-psd/` | Layered Photoshop sources for the logo and card |
 
-Use these files for this site only. Do not rename the originals; add web-ready versions (SVG, WebP) alongside them.
+Not included: the product video (it lives on the Amazon listings). Leave a video slot in the designs.
+
+Brand colours sampled from these files: teal **#1E806F**, black **#050301**, white.
+
+Do not rename or edit the originals. Put web-ready versions (SVG, WebP, AVIF) alongside them.
