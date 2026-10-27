@@ -38,9 +38,9 @@ const listNames = (keys) => {
 
 const TYPE_NAME = { standard: 'Lanyard', breakaway: 'Break-Away Lanyard' };
 // "Break-Away" must never split across lines; Hanken has no non-breaking hyphen glyph, so wrap it in a nowrap span.
-const nb = (text) => text.replace(/Break-Away|Break-away/g, '<span class="nb">$&</span>');
+const nb = (text) => text.replace(/Break-Away|[Bb]reak-away/g, '<span class="nb">$&</span>');
 const COLOR_KEYS = Object.keys(COLORS);
-const MAX_PACKS = 99;
+const MAX_PACKS = 999; // covers the finder's largest answer (134 packs per color at 9,999 people in 3 groups)
 const productOf = (type) => PRODUCTS.find((p) => p.line === type);
 const packOf = (type, size) => productOf(type).packs.find((p) => p.size === size);
 const unitCents = (pack) => toCents(perUnit(pack.price, pack.size));
@@ -209,7 +209,7 @@ function renderRows() {
   const extra = wide.colors.filter((c) => !colors.includes(c));
   moreBtn.hidden = extra.length === 0;
   moreBtn.innerHTML = order.type === 'standard'
-    ? `${listNames(extra)} come in the ${nb('Break-Away')} 25 pack`
+    ? `${listNames(extra)} come in the ${nb('break-away')} 25 pack`
     : `${listNames(extra)} come in the 25 pack`;
 }
 
@@ -338,10 +338,14 @@ function renderStage(s) {
     setTimeout(() => el.remove(), reduced() ? 160 : 360);
   }
   const motion = 'ready' in stage.dataset && !reduced();
-  const items = s.pack.colors.map((color) => {
+  const items = s.pack.colors.map((color, i) => {
     let el = live.get(color);
-    if (!el) stage.append(el = hangEl(color, s.type));
-    else if (el.dataset.type !== s.type) drawLanyard(el, s.type);
+    if (!el) {
+      // Place a new lanyard on its peg before it enters the DOM, so it drops in there instead of gliding from x = 0.
+      el = hangEl(color, s.type);
+      el.style.setProperty('--x', slotX(i, s.pack.colors.length));
+      stage.append(el);
+    } else if (el.dataset.type !== s.type) drawLanyard(el, s.type);
     const n = qty.get(color) || 0;
     const wasGhost = el.classList.contains('is-ghost');
     el.classList.toggle('is-ghost', !n);
@@ -357,11 +361,9 @@ function renderStage(s) {
   });
   layoutStage(items);
 }
-// Spread the pegs evenly. Few slots sit left of centre, clear of the receipt; more slots spread to the full width,
+// Peg i of n, spread evenly. Few slots sit left of centre, clear of the receipt; more slots spread to the full width,
 // so the right-hand lanyards hang behind the glass and colour it.
-function layoutStage(items = liveHangs()) {
-  const n = items.length;
-  if (!n) return;
+function slotX(i, n) {
   const cs = getComputedStyle(stage);
   const W = stage.clientWidth;
   const w = parseFloat(cs.getPropertyValue('--w')) || 136;
@@ -369,7 +371,13 @@ function layoutStage(items = liveHangs()) {
   const center = W * (c0 + (0.5 - c0) * Math.min(1, (n - 1) / 4));
   const room = Math.min(center, W - center) - 20 - w / 2;
   const gap = n > 1 ? Math.min(w * 0.95, (2 * room) / (n - 1)) : 0;
-  items.forEach((el, i) => el.style.setProperty('--x', `${(center + (i - (n - 1) / 2) * gap).toFixed(1)}px`));
+  return `${(center + (i - (n - 1) / 2) * gap).toFixed(1)}px`;
+}
+// Lanyards already on the desk glide to their new pegs (the CSS transform transition).
+function layoutStage(items = liveHangs()) {
+  const n = items.length;
+  if (!n) return;
+  items.forEach((el, i) => el.style.setProperty('--x', slotX(i, n)));
 }
 new ResizeObserver(() => layoutStage()).observe(stage);
 
@@ -473,6 +481,12 @@ function paintHeader() {
   $('#cart-count').textContent = num(t.packs);
   headerPending = false;
 }
+// The drawer's own live region: focus stays on a + or Remove button whose label never changes, so say what changed.
+let cartLiveTimer = 0;
+function announceCart(text) {
+  clearTimeout(cartLiveTimer);
+  cartLiveTimer = setTimeout(() => { $('#cart-live').textContent = text; }, 450);
+}
 
 wireSteppers(cartList, {
   min: 1,
@@ -486,14 +500,18 @@ wireSteppers(cartList, {
     $('.cline__price', line).textContent = usd(n * toCents(packOf(item.type, item.size).price));
     $('.cline__count', line).textContent = num(n * item.size);
     refreshCartTotals();
+    announceCart(`${COLORS[item.color].name} ${TYPE_NAME[item.type]}, ${item.size} pack: ${plural(n, 'pack')}, ${usd(n * toCents(packOf(item.type, item.size).price))}. Subtotal ${usd(cartTotals().cents)}.`);
   },
 });
 cartList.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-remove]');
   if (!btn) return;
   const i = Number(btn.closest('.cline').dataset.i);
-  cart.splice(i, 1);
+  const [gone] = cart.splice(i, 1);
   renderCart();
+  announceCart(cart.length
+    ? `Removed ${COLORS[gone.color].name} ${TYPE_NAME[gone.type]}, ${gone.size} pack. Subtotal ${usd(cartTotals().cents)}.`
+    : 'Removed. Your cart is empty.');
   // Keep focus in the drawer: the next line's Remove, else the previous one, else the close button.
   const next = $$('[data-remove]', cartList)[Math.min(i, cart.length - 1)];
   (next || $('[data-close]', dialog)).focus();
@@ -617,16 +635,19 @@ function loadFromHash() {
 addEventListener('hashchange', loadFromHash);
 
 /* ---------- 7. Phone and tablet summary bar ----------
-   Shown while the builder's own tally (with its Add button) is off screen, hidden under the open drawer. */
+   Shown while the order desk is on screen and the builder's own tally (with its Add button) is not. Hidden in the
+   sections below, where it would sit beside other totals and buttons, and under the open drawer. */
 const bar = $('#buybar');
 const wideQuery = matchMedia('(min-width: 1100px)');
 let tallyInView = false;
+let deskInView = true;
 function syncBar() {
-  const hide = wideQuery.matches || tallyInView || drawerOpen;
+  const hide = wideQuery.matches || tallyInView || drawerOpen || !deskInView;
   bar.classList.toggle('is-hidden', hide);
   bar.inert = hide;
 }
 new IntersectionObserver(([e]) => { tallyInView = e.isIntersecting; syncBar(); }).observe($('#tally'));
+new IntersectionObserver(([e]) => { deskInView = e.isIntersecting; syncBar(); }).observe($('#order'));
 wideQuery.addEventListener('change', syncBar);
 // WCAG 2.4.11: a focused control must never sit under the phone bar. The browser only scrolls for controls it
 // thinks are off screen, so after it has done its own scrolling, nudge the page (keyboard focus only).
@@ -679,11 +700,11 @@ function recommend({ people: n, wear, groups }) {
     if (options.length === 1 && colorsNeeded > 2) why.push(`Only the 25 pack comes in ${colorsNeeded} colors.`);
   } else if (colorsNeeded > lanyard.colors.length) {
     [best] = breakaway();
-    why.push(`The Lanyard comes in ${lanyard.colors.length} colors. For ${colorsNeeded} groups, the Break-Away 25 pack has all 6.`);
+    why.push(`The Lanyard comes in ${lanyard.colors.length} colors. For ${colorsNeeded} groups, the break-away 25 pack has all 6.`);
   } else if (perColor < SMALL_GROUP) {
     [best] = breakaway(50);
     alt = option('standard', lanyard);
-    why.push(`The Lanyard only comes in 100 packs, so for ${scope} the Break-Away ${best.pack.size} pack fits better.`);
+    why.push(`The Lanyard only comes in 100 packs, so for ${scope} the break-away ${best.pack.size} pack fits better.`);
   } else {
     best = option('standard', lanyard);
     [alt] = breakaway();
@@ -762,6 +783,8 @@ function initPull() {
   const fill = $('#pull-fill');
   const caption = $('#pull-caption');
   const CLOSED = caption.textContent;
+  // Reduced motion has no strap to pull, only the Before / After toggle, so the caption must not ask for a pull.
+  const closedText = () => (reduced() ? 'Before and after the clasp opens.' : CLOSED);
   const OPENED = 'If the strap is caught or pulled, the clasp opens.';
   let t = 0;
   let open = false;
@@ -822,7 +845,7 @@ function initPull() {
     open = false;
     t = 0;
     bench.classList.remove('is-open');
-    caption.textContent = CLOSED;
+    caption.textContent = closedText();
     fill.style.transform = 'scaleX(0)';
     slide(leftParts, 0, EASE.standard, 320);
     slide(rightParts, 0, EASE.standard, 320);
@@ -873,6 +896,7 @@ function initPull() {
   const syncMotion = () => {
     handle.tabIndex = reduced() ? -1 : 0;
     setFlag(handle, 'aria-hidden', reduced());
+    if (!open) caption.textContent = closedText();
   };
   motionPref.addEventListener('change', syncMotion);
   syncMotion();

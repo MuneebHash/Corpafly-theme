@@ -142,7 +142,7 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 }
 
 .brand { display: inline-flex; align-items: center; min-height: 44px; }
-.brand img { width: 106px; height: auto; }
+.brand img { width: 120px; height: auto; }   /* the small lockup's 120px minimum (brand book, section 1) */
 .site-nav { display: none; }
 .site-nav ul { display: flex; gap: var(--s-1); }
 .site-nav a {
@@ -174,7 +174,6 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
   .site-nav { display: block; }
   .icon-btn--account { display: inline-grid; }
   .menu-btn, .mobile-menu { display: none; }
-  .brand img { width: 120px; }
 }
 
 /* ---------- Hero ---------- */
@@ -274,7 +273,6 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 
 .badge__head { display: flex; align-items: center; justify-content: space-between; }
 .badge__mark { width: 22px; height: auto; }
-.badge__issuer { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--on-glass-muted); }
 .badge__name { margin-top: 14px; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; }
 .badge__spec { margin-top: 4px; font-size: 0.8125rem; color: var(--on-glass-muted); }
 .badge__price { display: flex; flex-direction: column; margin-top: auto; }
@@ -345,7 +343,7 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
   .hero__visual {
     grid-column: 7 / 13;
     --s: 1.45;
-    --badge-w: clamp(220px, 18vw, 260px);
+    --badge-w: clamp(240px, 18vw, 260px);
     --anchor-y: clamp(330px, 21vw + 110px, 410px);
     --slot-top: 14px;
     --slot-w: 56px;
@@ -356,6 +354,10 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
   }
   .badge { padding-inline: 22px; }
   .badge__name { font-size: 1.5rem; }
+}
+/* Narrow desktops: a shorter strand set, so its left ends stay clear of the hero copy and its links */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .hero__strands { width: calc(var(--badge-w) * 1.8); left: calc(50% - var(--badge-w) * 0.9); }
 }
 
 /* ---------- Section scaffolding ---------- */
@@ -385,7 +387,7 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .field__label { display: block; }
 .field__value { color: var(--ink); }
 .field__note { font-size: 0.875rem; color: var(--muted); }
-.field__note:empty { display: none; }
+.field__note:empty { position: absolute; }   /* out of the grid, but the live region exists before its text arrives */
 
 /* Segmented controls: native radios, so arrow keys and screen readers work without script */
 .segmented { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
@@ -686,7 +688,7 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .site-footer__policies { display: flex; flex-wrap: wrap; gap: 0 var(--s-5); flex: 1 1 100%; }
 .site-footer__policies a { font-size: 0.8125rem; }
 @media (min-width: 900px) {
-  .site-footer { padding-bottom: var(--s-7); }
+  .site-footer { padding-bottom: calc(var(--s-7) + 90px); }   /* room for the sticky bar: 62px bar, 20px offset, 8px air */
   .site-footer__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); }
   .site-footer__brand { grid-column: 1 / 5; }
   .site-footer__col:nth-of-type(1) { grid-column: 7 / 9; }
@@ -705,8 +707,9 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .sticky-buy.is-visible { visibility: visible; opacity: 1; }
 .sticky-buy__dot { font-size: 16px; flex: none; }
 .sticky-buy__desc { flex: 1; min-width: 0; display: grid; font-size: 0.875rem; line-height: 1.3; }
-.sticky-buy__desc span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sticky-buy__desc [data-sticky-desc] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sticky-buy__desc .mono { font-size: 0.9375rem; }
+.sticky-buy__price { display: flex; flex-wrap: wrap; align-items: center; column-gap: 8px; }   /* phones: the tag wraps under the total */
 @media (prefers-reduced-motion: no-preference) {
   .sticky-buy { translate: 0 12px; transition: opacity var(--dur-ui) var(--ease-standard), translate var(--dur-ui) var(--ease-out), visibility 0s linear var(--dur-ui); }
   .sticky-buy.is-visible { translate: 0 0; transition-delay: 0s; }
@@ -721,11 +724,13 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
     width: 580px; padding-left: 20px;
   }
   .sticky-buy__desc { display: flex; gap: 12px; align-items: baseline; }
+  .sticky-buy__price { flex: none; }
 }
 
 /* ---------- Cart drawer (glass, modal) ---------- */
 .cart-drawer {
   --glass-blur: 24px;
+  --glass-tint-strong: rgba(255, 255, 255, 0.9);   /* a frost, so the teal button behind never reads as a smear */
   position: fixed; inset: 0 0 0 auto; margin: 0;
   width: min(440px, 100vw); max-width: 100vw; height: 100dvh; max-height: 100dvh;
   padding: 0; border-width: 0 0 0 1px; border-radius: 0;
@@ -756,7 +761,7 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .cart-totals .cart-totals__sub { font-size: 1.125rem; font-weight: 500; }
 .cart-totals .cart-totals__sub dt { color: var(--ink); }
 .cart-drawer__note { font-size: 0.8125rem; color: var(--on-glass-muted); }
-.cart-drawer__note:empty { display: none; }
+.cart-drawer__note:empty { position: absolute; }   /* as .field__note: the status region exists before its text */
 .cart-drawer .btn--primary { min-height: 52px; }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -772,21 +777,11 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
   @starting-style { .cart-drawer[open] { opacity: 0; } }
 }
 
-/* ---------- Scroll-linked reveal, transform only ----------
-   The sample strands slide out from under the card edge as the card scrolls in, like swatches pulled
-   from a stack. No opacity: content never depends on scroll position to be visible. Stagger is a range
-   offset, four steps at most. */
-@keyframes sample-out { from { translate: -28px -50%; } }
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .sample__strand { animation: sample-out linear both; animation-timeline: view(); animation-range: entry 20% entry 100%; }
-    .sample:nth-child(2) .sample__strand { animation-range: entry 30% cover 30%; }
-    .sample:nth-child(3) .sample__strand { animation-range: entry 40% cover 35%; }
-    .sample:nth-child(n + 4) .sample__strand { animation-range: entry 50% cover 40%; }
-  }
-}
-
-/* Swatches keep their real colour in forced-colours mode; the names carry the meaning anyway */
+/* Swatches keep their real color in forced-colors mode; the names carry the meaning anyway.
+   Selection is drawn with border, inset shadow and tint, which forced colors flatten, so it gets an inset
+   outline. The focused option keeps the standard outer focus ring instead, so focus never looks like selection. */
 @media (forced-colors: active) {
   .swatch-dot { forced-color-adjust: none; }
+  .seg:has(:checked):not(:has(:focus-visible)),
+  .swatch:has(:checked):not(:has(:focus-visible)) { outline: 3px solid Highlight; outline-offset: -3px; }
 }

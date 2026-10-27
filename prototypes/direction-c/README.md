@@ -5,7 +5,7 @@
 **What is glass**
 - The header, which carries a running cart total.
 - The receipt over the live preview, the main glass moment: the hanging straps blur through it.
-- The phone summary bar, the cart drawer and the finder's suggested order.
+- The phone summary bar, the cart drawer and the finder's suggested order on desktop.
 
 **What moves**
 - Prices roll digit by digit (240 ms).

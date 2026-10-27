@@ -13,7 +13,7 @@ Glass sits over real woven strap, never a gradient: the badge's four colors lie 
 - On load, once: lanyard and badge drop in and settle with one pendulum swing (800ms).
 - Desktop pointer over the hero: the badge tilts up to 4deg and a highlight follows, until the pointer leaves.
 - Badge color choices glide the strap color.
-- On scroll: the break-away clasp pulls apart; sample strands slide out of the color card.
+- On scroll: the break-away clasp pulls apart.
 - Reduced motion: final states only; the drawer fades.
 
 **Why it fits the buyers.** Office managers, schools and event planners compare price per lanyard, so it is the biggest number on the badge and on every pack button. The buy panel follows the hero: product, pack, named colors, quantity and add to cart, in a few taps on a phone.

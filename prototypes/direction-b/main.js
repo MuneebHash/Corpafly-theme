@@ -31,22 +31,37 @@ function addToCart(items) {
   renderCart();
 }
 
-function renderCart() {
+// The parts of a cart line that change with its quantity
+const lineTotal = (l) => money(packOf(l.handle, l.size).price * l.qty);
+const lineEach = (l) => {
+  const pack = packOf(l.handle, l.size);
+  return `${money(perUnit(pack.price, pack.size))} per lanyard · ${l.size * l.qty} lanyards`;
+};
+
+// rebuild = false updates the existing rows in place (a typed quantity), so the field keeps focus and Tab moves on.
+function renderCart(rebuild = true) {
   const list = $('[data-cart-lines]');
   const packs = cart.lines.reduce((n, l) => n + l.qty, 0);
   const lanyards = cart.lines.reduce((n, l) => n + l.qty * l.size, 0);
   const subtotal = cart.lines.reduce((n, l) => n + l.qty * packOf(l.handle, l.size).price, 0);
 
-  list.innerHTML = cart.lines.map((l, i) => {
+  if (!rebuild) {
+    cart.lines.forEach((l, i) => {
+      const row = $(`[data-line="${i}"]`, list);
+      if (!row) return;
+      $('[data-line-qty]', row).value = l.qty;
+      $('.cart-line__total', row).textContent = lineTotal(l);
+      $('.cart-line__each', row).textContent = lineEach(l);
+    });
+  } else list.innerHTML = cart.lines.map((l, i) => {
     const p = byHandle[l.handle];
-    const pack = packOf(l.handle, l.size);
     const c = COLORS[l.color];
     return `<li class="cart-line" data-line="${i}">
       <div class="cart-line__vis" style="--strap:${c.hex}">${strand({ length: 140, bend: 0.12 })}</div>
       <p class="cart-line__title">${p.title}</p>
-      <p class="cart-line__total">${money(pack.price * l.qty)}</p>
+      <p class="cart-line__total">${lineTotal(l)}</p>
       <p class="cart-line__meta mono">${c.name} · ${l.size} pack</p>
-      <p class="cart-line__each mono">${money(perUnit(pack.price, pack.size))} per lanyard · ${l.size * l.qty} lanyards</p>
+      <p class="cart-line__each mono">${lineEach(l)}</p>
       <div class="cart-line__ctrl">
         <div class="stepper stepper--sm">
           <button type="button" class="stepper__btn" data-line-step="-1" aria-label="One pack fewer of ${c.name} ${p.title}, ${l.size} pack">${ICON('i-minus')}</button>
@@ -67,7 +82,7 @@ function renderCart() {
   count.toggleAttribute('data-empty', packs === 0);
   $('[data-open-cart]').setAttribute('aria-label', `Cart, ${plural(packs, 'pack')}`);
   const checkout = $('[data-checkout]');
-  checkout.toggleAttribute('aria-disabled', packs === 0);
+  checkout.setAttribute('aria-disabled', String(packs === 0));   // an empty value would read as false
 }
 
 const drawer = $('[data-drawer]');
@@ -130,7 +145,7 @@ function initDrawer() {
     if (!input) return;
     const line = cart.lines[+input.closest('[data-line]').dataset.line];
     line.qty = Math.max(1, Math.min(999, Math.round(+input.value) || 1));
-    renderCart();
+    renderCart(false);
   });
   // Prototype: checkout is Shopify's own and is not part of the theme
   $('[data-checkout]').addEventListener('click', (e) => e.preventDefault());
@@ -282,16 +297,18 @@ function initHeroStrap() {
     if (reduceMotion.matches) return; // final state: the dash offset defaults to 0 and the hook is visible
     draw.setAttribute('stroke-dashoffset', '1');
     hw.style.opacity = '0';
-    // Pin the strap to the CSS stroke sequence: it starts 520 ms after the first stroke's clock started, and the hook
-    // lands 1.14 s after it (1.08 s after the first stroke moves), however late this module ran.
+    // Pin the strap to the CSS stroke sequence, however late this module ran: the strap draws from 360 to 680 ms after
+    // the first stroke's clock started, and the hook drops in from 620 ms and lands at 800 ms (--dur-hero).
+    // The dash draw animates stroke-dashoffset, an exception to "transform and opacity only" kept because it is the
+    // concept's motion: it runs once, in 320 ms, and never under reduced motion.
     const first = $('.mk-p')?.getAnimations()[0];
     if (first) { try { await first.ready; } catch { /* cancelled */ } }
     const anims = [
-      draw.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 460, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'both' }),
+      draw.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 320, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'both' }),
       hw.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }],
-        { duration: 200, delay: 420, easing: 'cubic-bezier(0.05, 0.7, 0.1, 1)', fill: 'both' }),
+        { duration: 180, delay: 260, easing: 'cubic-bezier(0.05, 0.7, 0.1, 1)', fill: 'both' }),
     ];
-    if (first && first.startTime != null) anims.forEach((a) => { a.startTime = first.startTime + 520; });
+    if (first && first.startTime != null) anims.forEach((a) => { a.startTime = first.startTime + 360; });
     draw.removeAttribute('stroke-dashoffset');
     hw.style.opacity = '';
   };
@@ -394,7 +411,8 @@ function updateOrder() {
   $('[data-order-live]', form).innerHTML = `<span class="total__line mono">${plural(order.qty, 'pack')} · ${order.qty * order.size} lanyards</span><span class="total__price">${total}</span><span class="total__each mono">${money(each)} per lanyard</span>`;
   $('[data-order-add-price]', form).textContent = total;
   $('[data-order-qty]', form).value = order.qty;
-  $('[data-step="-1"]', form).disabled = order.qty <= 1;
+  // aria-disabled, not disabled: a disabled button would drop keyboard focus at qty 1 (the click handler clamps)
+  $('[data-step="-1"]', form).setAttribute('aria-disabled', String(order.qty <= 1));
   // The docked copy
   // Non-breaking spaces keep "100 pack × 2" together when the line wraps on a phone
   $('[data-dock-line]').textContent = `${name} · ${order.handle === 'lanyard' ? 'Lanyard' : 'Break-Away'} · ${order.size}\u00A0pack\u00A0×\u00A0${order.qty}`;
@@ -422,7 +440,8 @@ function initOrder() {
     else if (t.matches('[data-order-qty]')) { order.qty = Math.max(1, Math.min(999, Math.round(+t.value) || 1)); updateOrder(); }
   });
   form.addEventListener('click', (e) => {
-    const step = e.target.closest('[data-step]');
+    // An aria-disabled minus does nothing (no re-render, so the price is not announced again)
+    const step = e.target.closest('[data-step]:not([aria-disabled="true"])');
     if (step) { order.qty = Math.max(1, Math.min(999, order.qty + +step.dataset.step)); updateOrder(); }
     const more = e.target.closest('[data-more-colors]');
     if (more) {
@@ -441,7 +460,8 @@ function initOrder() {
   setProduct(order.handle);
 }
 
-// Dock: shown once the hero is gone and the full bar is out of view; hidden over the planner and footer.
+// Dock: shown only once the order bar has scrolled above the viewport (its Add to cart has left view), so it never
+// floats over the range plates with the bar's own choices; hidden over the planner and footer.
 const dock = $('[data-dock]');
 const dockState = { hero: true, bar: false, hide: new Set() };
 function dockSync() {
@@ -454,9 +474,12 @@ function initDock() {
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (e.target.matches('[data-hero]')) dockState.hero = e.isIntersecting;
-      else if (e.target === form) dockState.bar = e.isIntersecting;
+      else if (e.target === form) dockState.bar = e.isIntersecting || e.boundingClientRect.top > 0;
       else if (e.isIntersecting) dockState.hide.add(e.target); else dockState.hide.delete(e.target);
     }
+    // A nav jump can carry the bar from below the screen to above it without it ever intersecting, so no entry reports
+    // it. Re-read where it is whenever another watched section reports instead (bottom > 0: on screen or still below).
+    if (!entries.some((e) => e.target === form)) dockState.bar = form.getBoundingClientRect().bottom > 0;
     dockSync();
   });
   [$('[data-hero]'), form, ...$$('[data-dock-hide]'), $('.site-footer')].forEach((el) => io.observe(el));
@@ -546,7 +569,7 @@ function renderPlanner() {
     $('[data-group-dia]', row).style.setProperty('--strap', COLORS[g.color].hex);
     $('[data-group-color]', row).textContent = COLORS[g.color].name;
     $('[data-gcount]', row).value = g.count;
-    $('[data-gstep="-5"]', row).disabled = g.count <= 0;
+    $('[data-gstep="-5"]', row).setAttribute('aria-disabled', String(g.count <= 0));   // keeps focus at 0 (clamped)
     $('input[name="group"]', row).checked = g.id === planner.selected;
   }
   $('[data-tile-for]', root).textContent = `for ${sel.name}`;
@@ -607,7 +630,7 @@ function initPlanner() {
     renderPlanner();
   });
   root.addEventListener('click', (e) => {
-    const step = e.target.closest('[data-gstep]');
+    const step = e.target.closest('[data-gstep]:not([aria-disabled="true"])');   // a minus at 0 does nothing
     if (step) {
       const g = planner.groups.find((x) => x.id === step.closest('[data-group]').dataset.group);
       g.count = Math.max(0, Math.min(5000, g.count + +step.dataset.gstep));

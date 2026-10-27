@@ -1,7 +1,8 @@
 /* Corpafly, Direction B: "Diamond Grid".
    The CF mark is drawn on a 45-degree grid, so the page is too: a fine diamond lattice, chevron-cut plates,
-   hairlines and Martian Mono numerals. Glass only on the header, the hero lens, the docked order bar,
-   the plan card and the cart drawer. Builds on ../shared/tokens.css (colors, glass, motion tokens). */
+   hairlines and Martian Mono numerals. Live glass only on the header, the docked order bar, the plan card and the
+   cart drawer, plus a baked lens in the hero (glass rim and tint, no live blur). Builds on ../shared/tokens.css
+   (colors, glass, motion tokens). */
 
 /* Font cuts for this page, built with fontTools from ../shared/fonts (OFL 1.1, no Reserved Font Names; licences in fonts/).
    They hold only the axis ranges and glyphs used here (basic Latin plus the copyright sign, middle dot and times sign),
@@ -81,6 +82,9 @@ legend { padding: 0; }
 }
 /* Placeholder tags sit on dark and light surfaces alike; keep them from inheriting uppercase mono spacing */
 .ph-tag { text-transform: uppercase; letter-spacing: 0.06em; font-stretch: 100%; }
+/* Keeps "J-hook" and "break-away" whole: a split at the hyphen breaks the product's own spec terms.
+   (U+2011 is not an option: the trimmed fonts and archivo.woff2 lack the glyph.) */
+.nobr { white-space: nowrap; }
 
 /* Focus: teal ring from tokens.css; on dark surfaces a lighter teal keeps 3:1 against the background */
 [data-tone="dark"] :focus-visible, .site-header[data-tone="dark"] :focus-visible { outline-color: var(--teal-300); }
@@ -136,6 +140,7 @@ legend { padding: 0; }
   padding: 4px 0; border: 0; background: none; color: var(--accent-ink);
   text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px;
 }
+.link-btn[hidden] { display: none; }   /* the display above would otherwise beat the hidden attribute */
 .link-btn:hover { color: var(--ink); }
 
 .icon-btn {
@@ -195,7 +200,7 @@ legend { padding: 0; }
 
 .site-header__bar { display: flex; align-items: center; gap: 40px; height: var(--header-h); }
 .brand { display: block; flex: none; color: inherit; }
-.brand__lockup { height: 30px; width: auto; aspect-ratio: 693.84 / 196.53; }
+.brand__lockup { height: 34px; width: auto; aspect-ratio: 693.84 / 196.53; }   /* 120 px wide: the small lockup's minimum */
 .primary-nav ul { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .primary-nav a {
   display: block; padding: 10px 12px;
@@ -203,7 +208,7 @@ legend { padding: 0; }
   text-decoration: none; opacity: 0.9;
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0 1px; background-repeat: no-repeat; background-position: 12px calc(100% - 4px);
-  transition: background-size var(--dur-ui) var(--ease-standard), opacity var(--dur-quick);
+  transition: opacity var(--dur-quick);   /* the underline draws only under no-preference (motion block) */
 }
 .primary-nav a:hover { opacity: 1; background-size: calc(100% - 24px) 1px; }
 .header-actions { display: flex; align-items: center; gap: 2px; margin-left: auto; }
@@ -236,13 +241,12 @@ legend { padding: 0; }
 @media (max-width: 899px) {
   .primary-nav, .icon-btn--account { display: none; }
   .menu-btn { display: inline-grid; }
-  .brand__lockup { height: 26px; }
 }
 
 /* ---------- Hero ---------- */
 .hero {
-  /* The mark is placed from the lens: it starts 28 px right of the lens (never under the glass, so the blur makes
-     no glow), and on very wide screens it still crops at least 26% off the right edge. */
+  /* The mark is placed from the lens: it starts 28 px right of the lens (never under it), and on very wide screens
+     it still crops at least 26% off the right edge. */
   --hero-h: clamp(640px, 100svh, 1080px);
   --lens-w: 620px;
   --mark-h: calc(var(--hero-h) * 1.18);
@@ -276,7 +280,9 @@ legend { padding: 0; }
 
 .hero__inner { position: relative; z-index: 1; height: 100%; display: flex; align-items: center; padding-top: var(--header-h); }
 
-/* The lens: dark glass (tokens .glass-dark .glass--text) with the lattice redrawn magnified inside it. */
+/* The lens, baked: it keeps the dark glass rim, highlight and cut edges (tokens .glass-dark .glass--text) and the lattice
+   redrawn magnified inside it, but not the live blur. It covers 28 to 56% of the screen, far over the 10% glass budget,
+   and the blur only ever smeared a uniform lattice (and, on phones, the C). The 92% ink hides the page lattice behind it. */
 .hero .lens {
   --cut: 32px;
   --edge: var(--glass-dark-edge);
@@ -284,6 +290,13 @@ legend { padding: 0; }
   width: min(var(--lens-w), 100%);
   padding: 40px 44px 36px;
   border-radius: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: var(--glass-dark-fallback);
+}
+/* This rule outranks the solid black tokens.css gives these users, so restate it */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .hero .lens { background-color: var(--cf-black); }
 }
 .hero .lens::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -309,9 +322,10 @@ legend { padding: 0; }
 
 @media (max-width: 899px) {
   .hero { height: auto; min-height: 100svh; }
-  /* Phones: the mark crops into the top-right corner; the strap and hook sit above the lens, the C runs on under the glass */
-  .hero__mark { height: auto; width: clamp(560px, 172%, 760px); top: -140px; left: 28%; }
-  .hero__inner { align-items: flex-end; min-height: 100svh; padding-top: calc(var(--header-h) + 270px); padding-bottom: 16px; }
+  /* Phones: the mark crops into the top-right corner and the C runs on behind the lens; the strap and its J-hook
+     hang clear above the lens at every width up to 899 px */
+  .hero__mark { height: auto; width: clamp(500px, 140%, 560px); top: -160px; left: 28%; }
+  .hero__inner { align-items: flex-end; min-height: 100svh; padding-top: calc(var(--header-h) + 200px); padding-bottom: 16px; }
   .hero .lens { width: min(100%, 600px); padding: 28px 22px 24px; --cut: 24px; }
   .hero__sub { font-size: 1rem; }
   .hero__ctas .btn { flex: 1 1 100%; }
@@ -372,7 +386,7 @@ legend { padding: 0; }
 .photo-ref__note { font-size: 0.8125rem; color: var(--muted); align-self: center; }
 @media (max-width: 519px) { .photo-ref { grid-template-columns: 1fr 1fr; } .photo-ref__note { grid-column: 1 / -1; } }
 .plate__visual { display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 24px; align-items: center; }
-@media (max-width: 1099px) { .plates { grid-template-columns: 1fr; } }
+@media (max-width: 1099px) { .plates { grid-template-columns: minmax(0, 1fr); } }   /* minmax: a wide table never pushes the plate off-screen */
 @media (max-width: 519px) {
   .plate__body { padding: 20px 16px 24px; }
   .plate__visual { grid-template-columns: 1fr; }
@@ -457,6 +471,7 @@ legend { padding: 0; }
   .dots { gap: 4px; }
   .dots i { width: 7px; height: 7px; }
   .btn--add-row { padding: 0 12px; }
+  .btn--add-row:disabled { white-space: normal; width: 56px; padding: 0 4px; line-height: 1.25; }   /* "25 pack only" wraps to fit */
 }
 
 /* ---------- Order bar ---------- */
@@ -508,7 +523,8 @@ legend { padding: 0; }
 .stepper__btn { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--ink); }
 .stepper__btn:hover { background: var(--n-50); }
 .stepper__btn .icon { width: 16px; height: 16px; }
-.stepper__btn:disabled { color: var(--n-300); cursor: not-allowed; background: none; }
+/* At the limit the minus is aria-disabled, not disabled, so it keeps keyboard focus (main.js clamps the value) */
+.stepper__btn:disabled, .stepper__btn[aria-disabled="true"] { color: var(--n-300); cursor: not-allowed; background: none; }
 .stepper__input {
   width: 100%; min-width: 0; border: 0; border-inline: 1px solid var(--hair); background: none;
   text-align: center; font-size: 0.9375rem; letter-spacing: 0.02em; -moz-appearance: textfield; appearance: textfield;
@@ -803,7 +819,8 @@ legend { padding: 0; }
 }
 .trust__row li + li { padding-left: 32px; }
 .trust__row li + li::before { left: 14px; }
-.trust__row a { color: var(--accent-ink); text-underline-offset: 3px; }
+/* The link is a whole trust item, so it gets a 24 px+ target; the negative margin keeps the row height */
+.trust__row a { color: var(--accent-ink); text-underline-offset: 3px; display: inline-block; padding-block: 6px; margin-block: -6px; }
 @media (max-width: 899px) {
   .trust__row { grid-template-columns: 1fr 1fr; }
   .trust__row li:nth-child(3) { border-left: 0; padding-left: 24px; }
@@ -860,6 +877,10 @@ legend { padding: 0; }
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .drawer.glass.glass--text { background: rgba(255, 255, 255, 0.86); }    /* above the 72% floor: the page behind may be dark */
 }
+/* The rule above outranks the solid white tokens.css gives these users (fallback 3), so restate it */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .drawer.glass.glass--text { background: #fff; }
+}
 .drawer::backdrop { background: rgba(2, 24, 20, 0.42); }
 .drawer__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 12px 24px; border-bottom: 1px solid var(--hair); }
 .drawer__title { font: 300 1.5rem/1 var(--font-display); font-stretch: 125%; text-transform: uppercase; letter-spacing: 0.01em; display: flex; align-items: baseline; gap: 12px; }
@@ -890,18 +911,22 @@ legend { padding: 0; }
   .btn, .icon-btn, .chip, .seg__opt, .swatch, .stepper__btn { transition-property: color, border-color, background-color, box-shadow, transform; }
   .btn:active, .icon-btn:active, .stepper__btn:active { transform: scale(0.98); transition-duration: var(--dur-press); }
 
-  /* Hero moment, part 1: the six strokes slide in along their own 45-degree axes, staggered (CSS only, runs at first paint) */
-  .mk-p { animation: mk-in 480ms var(--ease-out) both; animation-delay: calc(var(--i) * 56ms + 60ms); }
-  .mk-whole { animation: mk-swap 1ms linear 820ms both; }
-  /* part 2, the strap, is timed from main.js so it follows this sequence exactly */
+  .primary-nav a { transition: background-size var(--dur-ui) var(--ease-standard), opacity var(--dur-quick); }
 
-  /* 45-degree wipe on first view (main.js adds .is-wiping; elements stay visible until then) */
-  .reveal.is-wiping { animation: wipe45 var(--dur-enter) var(--ease-out) backwards; animation-delay: calc(var(--d, 0) * 70ms); }
+  /* Hero moment, part 1: the six strokes slide in along their own 45-degree axes, staggered (CSS only, runs at first
+     paint). Strokes 60 to 660 ms; part 2, the strap and hook, is timed from main.js to land by 800 ms (--dur-hero). */
+  .mk-p { animation: mk-in 400ms var(--ease-out) both; animation-delay: calc(var(--i) * 40ms + 60ms); }
+  .mk-whole { animation: mk-swap 1ms linear 660ms both; }
+
+  /* 45-degree wipe on first view (main.js adds .is-wiping; elements stay visible until then). The clip-path wipe, like
+     the strap's dash draw in main.js, is an exception to "transform and opacity only", kept because it is the concept's
+     motion: it runs once, in 480 ms, and only under no-preference. */
+  .reveal.is-wiping { animation: wipe45 var(--dur-enter) var(--ease-out) backwards; animation-delay: calc(var(--d, 0) * 40ms); }
 
   .spec-table tbody tr::after { transition: transform var(--dur-ui) var(--ease-standard); }
 
-  /* Planner: the chosen diamond settles with one soft overshoot */
-  .tile__dia { transition: outline-color var(--dur-quick) var(--ease-standard), transform var(--dur-panel) var(--ease-spring); }
+  /* Planner: the chosen diamond steps up in size (the spring is kept for the hero moment) */
+  .tile__dia { transition: outline-color var(--dur-quick) var(--ease-standard), transform var(--dur-panel) var(--ease-out); }
   .tile:has(input:checked) .tile__dia { transform: rotate(45deg) scale(1.1); }
 
   .dock { transition: transform var(--dur-panel) var(--ease-out), visibility 0s linear var(--dur-panel); }

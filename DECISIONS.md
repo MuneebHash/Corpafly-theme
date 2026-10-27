@@ -84,6 +84,19 @@ Every major choice: the options considered, the pick, and why. Assumptions made 
 - B's hero uses the CF mark's geometry as a cropped background graphic in a dark key: deep teal C, black F. It works as a supergraphic, not as the logo.
 - The logo itself (in the header) keeps its approved colours. **Muneeb should approve this use** before it ships.
 
+### D16. Independent QA round before Gate 1
+- **Method:** for each direction, an independent design critic and a rules auditor reviewed the live page. A skeptic then reproduced every finding and rejected anything not real, not material, or that would make the page more generic. A fixer applied only the confirmed findings and re-checked.
+- **Outcome:** 59 findings, 41 confirmed and applied, 18 rejected. Notable fixes:
+  - A: the badge no longer retypes CORPAFLY in a font beside the mark (brand rule); the drawer tint rose to 90%; the sticky bar leads with colour, pack and quantity.
+  - B: the hero lens is baked instead of live glass; the hero moment is trimmed to 800 ms; the plates stack below 1100 px.
+  - C: cart changes are announced to screen readers; the finder card is solid on small screens; quantities go up to 999.
+- **Final checks, all three:**
+  - axe-core: 0 violations at 390 and 1440 px.
+  - Keyboard: focus visible on every control.
+  - Reduced motion: final states shown.
+  - Layout: no horizontal scroll from 360 to 1920 px.
+  - Lighthouse mobile: 96 to 97 performance, 100 accessibility, 100 best practices (local server, no compression; LCP 2.3 to 2.4 s).
+
 ## Assumptions
 
 | # | Assumption | Would change if |

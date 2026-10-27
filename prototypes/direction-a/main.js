@@ -3,7 +3,7 @@
 // code-built lanyards, plays the hero moment, tilts the badge, and runs the buy panel, the sticky bar
 // and the cart drawer. Catalogue and prices come from the shared products.js (prices are placeholders).
 import { hangingLanyard, strand, claspDetail } from '../shared/lanyard.js';
-import { PRODUCTS, COLORS, perUnit, money, savingVsSmallest } from '../shared/products.js';
+import { PRODUCTS, COLORS, perUnit, savingVsSmallest } from '../shared/products.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -12,8 +12,11 @@ const byHandle = (handle) => PRODUCTS.find((p) => p.handle === handle);
 const packOf = (product, size) => product.packs.find((k) => k.size === size);
 const smallestPack = (product) => product.packs.reduce((a, b) => (a.size < b.size ? a : b));
 const cents = (n) => Math.round(n * 100) / 100;
+// US formats with thousands separators ($26,843.13, 99,900), as in Direction C.
+const money = (n) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+const num = (n) => n.toLocaleString('en-US');
 const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-const clampQty = (n) => Math.min(99, Math.max(1, Math.round(n) || 1));
+const clampQty = (n) => Math.min(999, Math.max(1, Math.round(n) || 1));   // packs per line; 999 fits both steppers
 const icon = (id) => `<svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#${id}"/></svg>`;
 
 /* A quiet "tick" when a price changes: 240ms, transform and opacity only, skipped under reduced motion. */
@@ -171,15 +174,17 @@ const buy = (() => {
     const total = money(cents(pack.price * state.qty));
     const each = money(perUnit(pack.price, pack.size));
     const save = savingVsSmallest(product, pack.size);
-    el.count.textContent = `${count(state.qty, 'pack', 'packs')} · ${state.qty * pack.size} lanyards`;
+    el.count.textContent = `${count(state.qty, 'pack', 'packs')} · ${num(state.qty * pack.size)} lanyards`;
     el.total.textContent = total;
     el.unit.textContent = each;
     el.save.hidden = !save;
     el.save.textContent = `Save ${save}% vs ${smallestPack(product).size} pack`;
-    el.addPrice.textContent = total;
+    // Only rewrite the Add price when it changes: replacing the span under a press would swallow the click.
+    if (el.addPrice.textContent !== total) el.addPrice.textContent = total;
 
     el.stickyDot.style.setProperty('--strap', `var(--strap-${state.color})`);
-    el.stickyDesc.textContent = `${product.title} · ${COLORS[state.color].name} · ${pack.size} pack × ${state.qty}`;
+    // Color, pack and quantity first: on a narrow phone only the trailing product name can be clipped.
+    el.stickyDesc.textContent = `${COLORS[state.color].name} · ${pack.size} pack × ${state.qty} · ${product.title}`;
     el.stickyTotal.textContent = total;
 
     if (prevTotal !== total) { tick(el.total); tick(el.stickyTotal); }
@@ -194,10 +199,11 @@ const buy = (() => {
     else if (t.name === 'qty') state.qty = clampQty(Number(t.value));
     render();
   });
-  // Typing in the quantity field updates the total live; the field is tidied on change (blur).
+  // Typing in the quantity field updates the total live, clamped to the cap, so the summary and the Add
+  // price always match what Add will put in the cart; the field itself is tidied on change (blur).
   el.qty.addEventListener('input', () => {
     const n = Number(el.qty.value);
-    if (n >= 1 && n <= 99) { touched = true; state.qty = Math.round(n); render(); }
+    if (n >= 1) { touched = true; state.qty = clampQty(n); render(); }
   });
   $$('[data-step]', form).forEach((btn) => btn.addEventListener('click', () => {
     touched = true;
@@ -226,7 +232,7 @@ const buy = (() => {
     touched = true;
     state.product = btn.dataset.choose;
     render();
-    $('#buy').scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });
+    form.scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });   // the panel, so Add lands on screen
     form.querySelector('input[name="product"]:checked').focus({ preventScroll: true });
   }));
 
@@ -292,7 +298,7 @@ const cart = (() => {
         <p class="cart-line__name">${product.title}</p>
         <p class="cart-line__total mono">${money(cents(pack.price * l.qty))}</p>
         <p class="cart-line__meta">${COLORS[l.color].name} · ${l.size} pack</p>
-        <p class="cart-line__unit"><span class="mono">${money(perUnit(pack.price, pack.size))}</span> per lanyard · ${l.qty * l.size} lanyards</p>
+        <p class="cart-line__unit"><span class="mono">${money(perUnit(pack.price, pack.size))}</span> per lanyard · ${num(l.qty * l.size)} lanyards</p>
         <div class="cart-line__controls">
           <div class="stepper" role="group" aria-label="Packs: ${describe(l)}">
             <button type="button" data-line="${i}" data-delta="-1" aria-label="One pack fewer">${icon('i-minus')}</button>
@@ -308,7 +314,7 @@ const cart = (() => {
     const lanyards = lines.reduce((n, l) => n + l.qty * l.size, 0);
     const subtotal = lines.reduce((n, l) => n + packOf(byHandle(l.product), l.size).price * l.qty, 0);
     el.empty.hidden = lines.length > 0;
-    el.lanyards.textContent = String(lanyards);
+    el.lanyards.textContent = num(lanyards);
     el.subtotal.textContent = money(cents(subtotal));
     el.count.textContent = String(packs);
     el.button.dataset.count = String(packs);
@@ -346,6 +352,9 @@ const cart = (() => {
       const delta = step.dataset.delta;
       lines[i].qty = clampQty(lines[i].qty + Number(delta));
       render();
+      // render() replaced the line and its <output>, so say the new quantity, line price and subtotal here.
+      const l = lines[i];
+      el.status.textContent = `${describe(l)}: ${count(l.qty, 'pack', 'packs')}, ${money(cents(packOf(byHandle(l.product), l.size).price * l.qty))}. Subtotal ${el.subtotal.textContent}.`;
       $(`[data-line="${i}"][data-delta="${delta}"]`, el.lines).focus();   // keep focus on the same button
     } else if (remove) {
       const [gone] = lines.splice(Number(remove.dataset.remove), 1);
@@ -365,10 +374,14 @@ const cart = (() => {
   return {
     add({ product, size, color, qty }) {
       const line = lines.find((l) => l.product === product && l.size === size && l.color === color);
+      const before = line ? line.qty : 0;
       if (line) line.qty = clampQty(line.qty + qty);
       else lines.push({ product, size, color, qty });
+      const added = (line ? line.qty : qty) - before;   // what the cap let in, so the message never overstates
       render();
-      open(`Added ${count(qty, 'pack', 'packs')}: ${describe({ product, size, color })}.`);
+      open(added
+        ? `Added ${count(added, 'pack', 'packs')}: ${describe({ product, size, color })}.`
+        : `${describe({ product, size, color })} is already at the 999-pack limit.`);
     },
   };
 })();

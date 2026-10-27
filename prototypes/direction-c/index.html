@@ -23,7 +23,7 @@
 <!-- ============ Header: glass chrome with a running cart total ============ -->
 <header class="hdr glass" id="top">
   <div class="hdr__in wrap">
-    <a class="hdr__logo" href="#top"><img src="../../brand/logo/corpafly-lockup-small.svg" alt="Corpafly home" width="113" height="32"></a>
+    <a class="hdr__logo" href="#top"><img src="../../brand/logo/corpafly-lockup-small.svg" alt="Corpafly home" width="120" height="34"></a>
     <nav class="hdr__nav" aria-label="Main">
       <ul>
         <li><a href="#order">Shop</a></li>
@@ -123,7 +123,7 @@
                 <span class="row__text"><span class="row__name">Black</span><span class="row__meta num">100 lanyards</span></span>
                 <div class="stepper">
                   <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Black packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
-                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="1" aria-label="Black, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="1">
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="1" aria-label="Black, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="999" aria-valuenow="1">
                   <button type="button" class="stepper__btn" data-step="1" aria-label="More Black packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
                 </div>
               </li>
@@ -132,7 +132,7 @@
                 <span class="row__text"><span class="row__name">Blue</span><span class="row__meta num">0 lanyards</span></span>
                 <div class="stepper">
                   <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Blue packs" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
-                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Blue, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0">
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Blue, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="999" aria-valuenow="0">
                   <button type="button" class="stepper__btn" data-step="1" aria-label="More Blue packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
                 </div>
               </li>
@@ -141,7 +141,7 @@
                 <span class="row__text"><span class="row__name">Green</span><span class="row__meta num">0 lanyards</span></span>
                 <div class="stepper">
                   <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Green packs" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
-                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Green, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0">
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Green, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="999" aria-valuenow="0">
                   <button type="button" class="stepper__btn" data-step="1" aria-label="More Green packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
                 </div>
               </li>
@@ -150,12 +150,12 @@
                 <span class="row__text"><span class="row__name">Red</span><span class="row__meta num">0 lanyards</span></span>
                 <div class="stepper">
                   <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Red packs" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
-                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Red, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0">
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Red, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="999" aria-valuenow="0">
                   <button type="button" class="stepper__btn" data-step="1" aria-label="More Red packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
                 </div>
               </li>
             </ul>
-            <button type="button" class="link-btn more-colors" id="more-colors">Yellow and Purple come in the <span class="nb">Break-Away</span> 25 pack</button>
+            <button type="button" class="link-btn more-colors" id="more-colors">Yellow and Purple come in the <span class="nb">break-away</span> 25 pack</button>
           </fieldset>
 
           <!-- The tally pins to the bottom of the screen on desktop while the sheet scrolls (see styles.css). -->
@@ -186,7 +186,7 @@
           <p class="desk__caption">
             <span class="desk__label">Preview</span>
             <span class="desk__product" id="desk-product">Lanyard, 100 pack</span>
-            <span class="desk__note">Illustration. Strap colors are close matches.</span>
+            <span class="desk__note">Illustration. Strap colors are approximate.</span>
           </p>
 
           <!-- The receipt: the main glass moment. It floats over the hanging lanyards and reads like an order ticket. -->
@@ -212,7 +212,7 @@
     </div>
   </section>
 
-  <!-- Phone and tablet: a glass summary bar while the builder's own Add button is off screen. -->
+  <!-- Phone and tablet: a glass summary bar while the order desk is on screen and the builder's own Add button is not. -->
   <div class="buybar glass glass--text" id="buybar">
     <div class="buybar__nums">
       <span class="buybar__total num" data-roll="bar-total">$26.87</span>
@@ -392,10 +392,10 @@
     <div class="wrap pull__grid">
       <div class="pull__copy">
         <h2 class="h2" id="pull-title"><span class="nb">Break-away,</span> in plain words.</h2>
-        <p>The Break-Away Lanyard has a safety clasp at the back of the neck. If the strap is caught or pulled, the clasp opens and the lanyard comes off.</p>
+        <p>The Break-Away Lanyard has a safety clasp at the neck. If the strap is caught or pulled, the clasp opens and the lanyard comes off.</p>
         <p>Choose it for kids and schools, hospitals and warehouses, or anywhere a caught strap is a risk.</p>
         <dl class="pull__facts">
-          <div><dt>Where</dt><dd>Back of the neck</dd></div>
+          <div><dt>Where</dt><dd>At the neck</dd></div>
           <div><dt>Release force</dt><dd><span class="ph-tag">To confirm</span></dd></div>
         </dl>
       </div>
@@ -443,7 +443,7 @@
         <li class="use">
           <h3 class="use__name">Schools</h3>
           <p class="use__line">Break-away for students, one color per class.</p>
-          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1E45A8"></span><span class="chip chip--sm" style="--strap:#1F7A45"></span><span class="chip chip--sm" style="--strap:#C42B2B"></span><span class="chip chip--sm" style="--strap:#F2C12E"></span></span><span>Break-Away, 25 pack. Blue, Green, Red, Yellow <span class="num">×1</span> each</span></p>
+          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1E45A8"></span><span class="chip chip--sm" style="--strap:#1F7A45"></span><span class="chip chip--sm" style="--strap:#C42B2B"></span><span class="chip chip--sm" style="--strap:#F2C12E"></span></span><span><span class="nb">Break-Away</span> Lanyard, 25 pack. Blue, Green, Red, Yellow <span class="num">×1</span> each</span></p>
           <button type="button" class="btn btn--quiet use__btn" data-load="breakaway-25:blue.1,green.1,red.1,yellow.1">Load this order<span class="visually-hidden">: Schools</span></button>
         </li>
         <li class="use">
@@ -455,7 +455,7 @@
         <li class="use">
           <h3 class="use__name">Travel</h3>
           <p class="use__line">Cruise cards and room keys. One small pack.</p>
-          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1E45A8"></span></span><span>Break-Away, 25 pack. Blue <span class="num">×1</span></span></p>
+          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1E45A8"></span></span><span><span class="nb">Break-Away</span> Lanyard, 25 pack. Blue <span class="num">×1</span></span></p>
           <button type="button" class="btn btn--quiet use__btn" data-load="breakaway-25:blue.1">Load this order<span class="visually-hidden">: Travel</span></button>
         </li>
       </ul>
@@ -589,6 +589,7 @@
       </button>
     </div>
     <p class="drawer__sum" id="cart-sum">Empty</p>
+    <p class="visually-hidden" id="cart-live" aria-live="polite" aria-atomic="true"></p>
     <ul class="drawer__lines" id="cart-lines"></ul>
     <p class="drawer__empty" id="cart-empty">Your cart is empty. Build an order on the order desk.</p>
     <div class="drawer__foot">
