@@ -1,0 +1,163 @@
+/* Corpafly design tokens, shared by every prototype and later by the theme.
+   Colour values: brand teal and black are sampled from the logo files; ramps are built in OKLCH on the teal hue (178)
+   so tints stay in the same family. Contrast pairs that pass WCAG 2.2 AA are noted where it matters. */
+
+@property --strap { syntax: "<color>"; inherits: true; initial-value: #1F1F1F; }
+
+:root {
+  /* ---- Core brand ---- */
+  --cf-teal: #1E806F;   /* logo C. 4.80:1 on white: AA for text on pure white only */
+  --cf-black: #050301;  /* logo F */
+  --cf-white: #FFFFFF;
+
+  /* ---- Teal ramp ---- */
+  --teal-50: #EFFAF7;  --teal-100: #DEF2ED; --teal-200: #BCE5DB; --teal-300: #8DCDBE; --teal-400: #58AA98;
+  --teal-500: #1E806F; --teal-600: #106A5B; --teal-700: #045448; --teal-800: #013F35; --teal-900: #022B24; --teal-950: #021814;
+
+  /* ---- Glass neutrals: cool greys with a trace of the teal hue, like the edge of float glass ---- */
+  --n-0: #FFFFFF;  --n-25: #F9FCFB;  --n-50: #F3F7F6;  --n-100: #E9EEED; --n-200: #DADFDE; --n-300: #C3C9C7;
+  --n-400: #9CA3A1; --n-500: #777D7C; --n-600: #595F5D; --n-700: #414645; --n-800: #2A2F2E; --n-900: #171C1B; --n-950: #0A0E0D;
+
+  /* ---- Product strap colours. Black and blue sampled from product photos; the rest approximate until photos exist ---- */
+  --strap-black: #1F1F1F; --strap-blue: #1E45A8; --strap-green: #1F7A45;
+  --strap-red: #C42B2B;   --strap-yellow: #F2C12E; --strap-purple: #5E2D8C;
+
+  /* ---- Semantic colours (light surfaces) ---- */
+  --bg: var(--n-0);
+  --surface: var(--n-50);
+  --surface-2: var(--n-100);
+  --ink: var(--cf-black);          /* 20.6:1 on white */
+  --ink-2: var(--n-800);
+  --muted: var(--n-600);           /* 6.0:1 on n-50. n-500 is for large text only */
+  --line: rgba(5, 3, 1, 0.10);
+  --line-strong: rgba(5, 3, 1, 0.22);
+  --accent: var(--cf-teal);        /* fills, selected states, focus. Teal is a signal, not a surface */
+  --accent-ink: var(--teal-600);   /* teal text on any tinted surface (6.0:1 on n-50) */
+  --on-accent: #FFFFFF;
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--cf-teal);
+
+  /* ---- Type scale (fluid, 390 px to 1440 px) ---- */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+  --fs-xl: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  --fs-2xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  --fs-3xl: clamp(2.25rem, 1.6rem + 2.8vw, 4.25rem);
+  --fs-4xl: clamp(2.75rem, 1.8rem + 4.2vw, 6rem);
+
+  /* ---- Space (4 px base) ---- */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --maxw: 1320px;
+
+  /* ---- Radius: small and consistent. Pills only for chips and steppers ---- */
+  --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 26px; --r-pill: 999px;
+
+  /* ---- Shadows: one light source, top left ---- */
+  --shadow-1: 0 1px 1px rgba(5, 3, 1, 0.04), 0 2px 6px -2px rgba(5, 3, 1, 0.08);
+  --shadow-2: 0 1px 1px rgba(5, 3, 1, 0.04), 0 10px 24px -10px rgba(5, 3, 1, 0.16);
+  --shadow-3: 0 2px 2px rgba(5, 3, 1, 0.04), 0 24px 48px -20px rgba(5, 3, 1, 0.24);
+
+  /* ---- Glass material (research/01-glass-motion.md, section 3) ----
+     Tint floors are worst-case: ink text needs >= 72% white behind it even over pure black,
+     white text needs >= 62% ink even over pure white. Cost grows with glass AREA, not blur radius. */
+  --glass-blur: 16px;                                 /* 12px under 768px, 24px for drawer and quick-view */
+  --glass-saturate: 150%;
+  /* light glass */
+  --glass-tint: rgba(255, 255, 255, 0.56);            /* chrome over known content, or icon-only */
+  --glass-tint-strong: rgba(255, 255, 255, 0.72);     /* any text over content that can scroll behind */
+  --glass-edge: rgba(255, 255, 255, 0.55);            /* 1 px rim */
+  --glass-hairline: rgba(5, 3, 1, 0.06);              /* outer line that separates glass from white pages */
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.70);
+  --glass-fallback: rgba(255, 255, 255, 0.94);        /* no backdrop-filter */
+  /* dark glass */
+  --glass-dark-tint: rgba(5, 3, 1, 0.50);
+  --glass-dark-tint-strong: rgba(5, 3, 1, 0.64);      /* white text */
+  --glass-dark-edge: rgba(255, 255, 255, 0.14);
+  --glass-dark-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --glass-dark-fallback: rgba(5, 3, 1, 0.92);
+
+  /* ---- Motion (research/01-glass-motion.md). Animate transform and opacity only ---- */
+  --dur-press: 100ms;   /* press feedback (buttons scale to 0.98) */
+  --dur-quick: 160ms;   /* hover, small state changes */
+  --dur-ui: 240ms;      /* menus, popovers, price changes */
+  --dur-panel: 320ms;   /* drawers in (out: 200ms) */
+  --dur-enter: 480ms;   /* first-view reveals: rise 12px + fade, 40ms stagger, 4 items max */
+  --dur-hero: 800ms;    /* the one hero product moment */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);      /* state changes */
+  --ease-out: cubic-bezier(0.05, 0.7, 0.1, 1);      /* entrances: fast start, long settle */
+  --ease-in: cubic-bezier(0.3, 0, 0.8, 0.15);       /* exits */
+  --ease-ui: cubic-bezier(0.2, 0, 0.38, 0.9);       /* small productive UI changes */
+  --ease-spring: linear(0, 0.22 7%, 0.69 18%, 1.03 31%, 1.1 38%, 1.07 46%, 1 58%, 0.99 70%, 1);  /* one soft overshoot */
+
+  --z-header: 50; --z-drawer: 80; --z-toast: 90;
+}
+
+/* ---------- Glass utilities ----------
+   Solid-first: the fallback is the default, live glass is the enhancement. Add .glass--text when text sits on it.
+   Never nest glass inside glass, never animate the blur, max three glass layers on screen. */
+.glass, .glass-dark { position: relative; }
+.glass {
+  background: var(--glass-fallback);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-highlight), 0 0 0 1px var(--glass-hairline), 0 8px 24px rgba(5, 3, 1, 0.08);
+}
+.glass-dark {
+  color: #fff;
+  background: var(--glass-dark-fallback);
+  border: 1px solid var(--glass-dark-edge);
+  box-shadow: var(--glass-dark-highlight), 0 8px 24px rgba(5, 3, 1, 0.18);
+}
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .glass, .glass-dark {
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  }
+  .glass { background: var(--glass-tint); }
+  .glass.glass--text { background: var(--glass-tint-strong); }
+  .glass-dark { background: var(--glass-dark-tint); }
+  .glass-dark.glass--text { background: var(--glass-dark-tint-strong); }
+}
+@media (max-width: 767px) { :root { --glass-blur: 12px; } }
+/* Less transparency or more contrast requested: solid surfaces with an ink border.
+   (Safari ignores prefers-reduced-transparency; prefers-contrast works everywhere.) */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .glass, .glass-dark { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .glass, .glass.glass--text { background: #fff; border-color: var(--cf-black); }
+  .glass-dark, .glass-dark.glass--text { background: var(--cf-black); border-color: #fff; }
+}
+@media (forced-colors: active) {
+  .glass, .glass-dark { -webkit-backdrop-filter: none; backdrop-filter: none; background: Canvas; border: 1px solid CanvasText; }
+}
+
+/* ---------- Shared basics ---------- */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--cf-teal);
+  outline-offset: 2px;
+}
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: var(--s-4); top: -100px; z-index: 100; padding: var(--s-3) var(--s-4);
+  background: var(--ink); color: #fff; border-radius: var(--r-sm); text-decoration: none;
+}
+.skip-link:focus { top: var(--s-4); }
+
+/* A swatch always carries a hairline ring: yellow is 1.7:1 on white and black disappears on dark. */
+.swatch-dot {
+  display: inline-block; width: 1em; height: 1em; border-radius: 50%;
+  background: var(--strap); box-shadow: inset 0 0 0 1px rgba(5, 3, 1, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+/* Placeholder label for anything not yet confirmed (prices, specs, photos). */
+.ph-tag {
+  display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px; border-radius: var(--r-pill);
+  font: 500 10px/1.6 ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #6B4E00; background: #FFF3CC; border: 1px dashed #C99A00; vertical-align: middle; white-space: nowrap;
+}
+
+/* Functional icons (icons.svg sprite, Phosphor, MIT). Icons never stand alone as section markers. */
+.icon { width: 1.25em; height: 1.25em; fill: currentColor; flex: none; vertical-align: -0.2em; }

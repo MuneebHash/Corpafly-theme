@@ -1,0 +1,19 @@
+/* Self-hosted fonts for the Corpafly prototypes. All SIL Open Font License 1.1 (licence files in this folder).
+   Latin subset WOFF2 from Google Fonts. Declaring a face does not download it: each page only pulls what it uses.
+   Faces that are another company's identity type (Red Hat, IBM Plex, Mona Sans, Geist) are deliberately not used. */
+
+/* Direction A: Instrument Sans (headlines and UI; width axis 75-100%), Fragment Mono (prices, specs) */
+@font-face { font-family: "Instrument Sans"; src: url("instrument-sans.woff2") format("woff2"); font-weight: 400 700; font-stretch: 75% 100%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Instrument Sans"; src: url("instrument-sans-italic.woff2") format("woff2"); font-weight: 400 700; font-stretch: 75% 100%; font-style: italic; font-display: swap; }
+@font-face { font-family: "Fragment Mono"; src: url("fragment-mono.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Fragment Mono"; src: url("fragment-mono-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+
+/* Direction B: Archivo (width axis 62-125%: expanded light headlines, normal-width body), Martian Mono (spec plates) */
+@font-face { font-family: "Archivo"; src: url("archivo.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url("archivo-italic.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; font-display: swap; }
+@font-face { font-family: "Martian Mono"; src: url("martian-mono.woff2") format("woff2"); font-weight: 100 800; font-stretch: 75% 112.5%; font-style: normal; font-display: swap; }
+
+/* Direction C: Atkinson Hyperlegible Next (everything), Atkinson Hyperlegible Mono (quantities, totals) */
+@font-face { font-family: "Atkinson Hyperlegible Next"; src: url("atkinson-hyperlegible-next.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible Next"; src: url("atkinson-hyperlegible-next-italic.woff2") format("woff2"); font-weight: 200 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible Mono"; src: url("atkinson-hyperlegible-mono.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }

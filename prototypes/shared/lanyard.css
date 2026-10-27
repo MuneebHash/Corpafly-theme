@@ -1,0 +1,17 @@
+/* Shading for the code-built lanyards (lanyard.js). Set --strap on any ancestor to colour a lanyard.
+   Light ribs and dark ribs alternate so the weave reads on black as well as on yellow. */
+/* --strap is registered in tokens.css (inherits, initial #1F1F1F); never re-declare it on .ly itself. */
+.ly { display: block; overflow: visible; }
+.ly .ly-strap path { fill: none; stroke-linecap: butt; stroke-linejoin: round; }
+.ly .ly-rim   { stroke: color-mix(in oklab, var(--strap), #000 30%); }
+.ly .ly-body  { stroke: var(--strap); }
+.ly .ly-rib-d { stroke: color-mix(in oklab, var(--strap), #000 30%); opacity: 0.45; }
+.ly .ly-rib-l { stroke: color-mix(in oklab, var(--strap), #fff 20%); opacity: 0.28; }
+.ly .ly-sheen { stroke: color-mix(in oklab, var(--strap), #fff 40%); opacity: 0.07; }
+.ly .ly-plastic    { fill: color-mix(in oklab, var(--strap), #000 18%); stroke: color-mix(in oklab, var(--strap), #000 45%); stroke-width: 0.8; }
+.ly .ly-plastic-hi { fill: none; stroke: #fff; opacity: 0.18; stroke-linecap: round; }
+
+/* Colour changes glide instead of snapping (needs @property --strap, declared in tokens.css). */
+@media (prefers-reduced-motion: no-preference) {
+  .ly { transition: --strap var(--dur-panel, 320ms) var(--ease-standard, ease); }
+}

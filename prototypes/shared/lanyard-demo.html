@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lanyard visuals</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="lanyard.css">
+<style>
+  body { margin: 0; padding: 32px; font: 14px/1.4 system-ui, sans-serif; background: var(--n-50); color: var(--ink); }
+  h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 32px 0 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+  .cell { width: 150px; text-align: center; }
+  .cell .ly-hanging { width: 150px; height: auto; }
+  .strand { width: 240px; }
+  .clasp { width: 420px; }
+  .dark { background: var(--n-950); padding: 24px; border-radius: 12px; }
+</style>
+</head>
+<body>
+<h2>Standard, 100 pack colours</h2><div class="row" id="std"></div>
+<h2>Break-away, all colours</h2><div class="row" id="ba"></div>
+<h2>Strands</h2><div class="row" id="strands"></div>
+<h2>Clasp detail</h2><div class="row"><div class="clasp" id="clasp" style="--strap: var(--strap-blue)"></div><div class="clasp dark" id="clasp2" style="--strap: var(--strap-black)"></div></div>
+<script type="module">
+import { hangingLanyard, strand, claspDetail } from './lanyard.js';
+import { COLORS } from './products.js';
+const cell = (type, key) => `<div class="cell" style="--strap:${COLORS[key].hex}">${hangingLanyard({ type }).svg}<div>${COLORS[key].name}</div></div>`;
+document.getElementById('std').innerHTML = ['black','blue','green','red'].map(k => cell('standard', k)).join('');
+document.getElementById('ba').innerHTML = Object.keys(COLORS).map(k => cell('breakaway', k)).join('');
+document.getElementById('strands').innerHTML = Object.keys(COLORS).map(k => `<div class="strand" style="--strap:${COLORS[k].hex}">${strand()}</div>`).join('');
+document.getElementById('clasp').innerHTML = claspDetail();
+document.getElementById('clasp2').innerHTML = claspDetail();
+</script>
+</body>
+</html>
