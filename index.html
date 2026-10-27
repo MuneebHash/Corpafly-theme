@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corpafly Design Hub</title>
+<meta name="description" content="Corpafly store design: three homepage directions for Gate 1, the brand book, the logo set and the research.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="brand/logo/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="prototypes/shared/fonts/fonts.css">
+<link rel="stylesheet" href="prototypes/shared/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 "Instrument Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+  header.top { border-bottom: 1px solid var(--line); }
+  header.top .wrap { display: flex; align-items: center; gap: 16px; padding-top: 18px; padding-bottom: 18px; }
+  header.top img { height: 30px; width: auto; }
+  .label { font: 400 12px/1.4 "Fragment Mono", ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-size: var(--fs-3xl); font-weight: 500; letter-spacing: -0.02em; line-height: 1.05; margin: var(--s-8) 0 var(--s-4); max-width: 16ch; }
+  .lede { font-size: var(--fs-lg); color: var(--ink-2); max-width: 60ch; margin: 0 0 var(--s-8); }
+  .dirs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); }
+  @media (max-width: 900px) { .dirs { grid-template-columns: minmax(0, 1fr); } }
+  .dir { display: grid; gap: var(--s-3); align-content: start; }
+  .dir .shot { display: block; aspect-ratio: 16 / 10; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); background: var(--n-50); }
+  .dir .shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .dir h2 { margin: 6px 0 0; font-size: var(--fs-xl); font-weight: 500; letter-spacing: -0.01em; }
+  .dir p { margin: 0; color: var(--ink-2); }
+  .dir .links { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--fs-sm); }
+  .dir .links a { color: var(--accent-ink); text-underline-offset: 3px; }
+  .dir.rec .shot { outline: 2px solid var(--cf-teal); outline-offset: 3px; }
+  .rec-tag { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: var(--r-pill); background: var(--cf-teal); color: #fff; font: 500 11px "Fragment Mono", monospace; letter-spacing: .06em; text-transform: uppercase; vertical-align: middle; }
+  section.more { border-top: 1px solid var(--line); margin-top: var(--s-9); padding: var(--s-7) 0 var(--s-9); }
+  .more ul { list-style: none; padding: 0; margin: var(--s-4) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--s-5); }
+  @media (max-width: 900px) { .more ul { grid-template-columns: minmax(0, 1fr); } }
+  .more li { border-top: 1px solid var(--line); padding: 14px 0; }
+  .more li a { font-weight: 500; text-decoration: none; }
+  .more li a:hover { color: var(--accent-ink); text-decoration: underline; }
+  .more li span { display: block; color: var(--muted); font-size: var(--fs-sm); }
+  footer { border-top: 1px solid var(--line); padding: var(--s-5) 0; color: var(--muted); font-size: var(--fs-sm); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <img src="brand/logo/corpafly-lockup-small.svg" alt="Corpafly" width="104" height="30">
+    <span class="label">Design hub · Gate 1</span>
+  </div>
+</header>
+<main class="wrap">
+  <h1>Three homepage directions</h1>
+  <p class="lede">Each direction is a working static homepage with real products, desktop and mobile, and its motion running. They share the brand system and differ in concept. Prices are placeholders.</p>
+
+  <div class="dirs">
+    <article class="dir" id="dir-a">
+      <a class="shot" href="prototypes/direction-a/"><img src="prototypes/screens/direction-a-1440-fold.png" alt="Direction A first screen" loading="lazy" width="1440" height="900"></a>
+      <span class="label">Direction A</span>
+      <h2>Clear Sleeve</h2>
+      <p data-blurb>The badge sleeve is the brand's glass: a bright, quiet page where the product hangs behind real glass.</p>
+      <p class="links"><a href="prototypes/direction-a/">Open the page</a><a href="prototypes/screens/direction-a-1440.jpg">Desktop screen</a><a href="prototypes/screens/direction-a-390.jpg">Mobile screen</a></p>
+    </article>
+    <article class="dir" id="dir-b">
+      <a class="shot" href="prototypes/direction-b/"><img src="prototypes/screens/direction-b-1440-fold.png" alt="Direction B first screen" loading="lazy" width="1440" height="900"></a>
+      <span class="label">Direction B</span>
+      <h2>Diamond Grid</h2>
+      <p data-blurb>Built on the mark's 45 degree grid: spec plates, chevron cuts and glass lenses over a fine lattice.</p>
+      <p class="links"><a href="prototypes/direction-b/">Open the page</a><a href="prototypes/screens/direction-b-1440.jpg">Desktop screen</a><a href="prototypes/screens/direction-b-390.jpg">Mobile screen</a></p>
+    </article>
+    <article class="dir" id="dir-c">
+      <a class="shot" href="prototypes/direction-c/"><img src="prototypes/screens/direction-c-1440-fold.png" alt="Direction C first screen" loading="lazy" width="1440" height="900"></a>
+      <span class="label">Direction C</span>
+      <h2>Order Desk</h2>
+      <p data-blurb>The homepage is the order form: type, pack, colors and quantities, with the price per lanyard live.</p>
+      <p class="links"><a href="prototypes/direction-c/">Open the page</a><a href="prototypes/screens/direction-c-1440.jpg">Desktop screen</a><a href="prototypes/screens/direction-c-390.jpg">Mobile screen</a></p>
+    </article>
+  </div>
+
+  <section class="more">
+    <span class="label">Also at this gate</span>
+    <ul>
+      <li><a href="brand/brand-book.html">Brand book</a><span>Logo, colour, type, glass, motion, imagery, icons, voice</span></li>
+      <li><a href="https://github.com/MuneebHash/Corpafly-theme/blob/main/brand/logo/README.md">Logo set (SVG)</a><span>Traced from the originals, 98.9% pixel match</span></li>
+      <li><a href="https://github.com/MuneebHash/Corpafly-theme/blob/main/research/REPORT.md">Research report</a><span>Five streams, top 15 references, theme base</span></li>
+      <li><a href="https://github.com/MuneebHash/Corpafly-theme/blob/main/DECISIONS.md">Decisions and assumptions</a><span>What was picked, why, and what needs confirming</span></li>
+      <li><a href="https://github.com/MuneebHash/Corpafly-theme/blob/main/brand/INVENTORY.md">Asset inventory</a><span>Every brand file checked, colours sampled</span></li>
+      <li><a href="prototypes/shared/lanyard-demo.html">Code-built lanyards</a><span>Every colour drawn the same way, until the photo shoot</span></li>
+    </ul>
+  </section>
+</main>
+<footer><div class="wrap">CORPAFLY LLC · Design work in progress · Prices shown are placeholders</div></footer>
+</body>
+</html>

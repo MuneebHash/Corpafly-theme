@@ -103,13 +103,13 @@
   .core .chip { border-radius: var(--r-md); padding: var(--s-5); min-height: 240px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--line); }
   .core .chip h3 { font-size: var(--fs-xl); }
   .core .chip dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; font: 12px/1.6 var(--mono); }
-  .core .chip dt { opacity: .7; } .core .chip dd { margin: 0; }
+  .core .chip dt { letter-spacing: .06em; } .core .chip dd { margin: 0; }
   @media (max-width: 900px) { .core { grid-template-columns: 1fr; } }
   .proportion { display: flex; height: 44px; border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--line); font: 12px var(--mono); }
   .proportion span { display: grid; place-items: center; }
   .ramp { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--line); }
   .ramp div { min-height: 92px; padding: 8px; display: flex; flex-direction: column; justify-content: flex-end; font: 11px/1.35 var(--mono); }
-  .ramp b { font-weight: 400; opacity: .75; }
+  .ramp b { font-weight: 400; }
   @media (max-width: 700px) { .ramp { grid-auto-flow: row; grid-auto-columns: auto; } .ramp div { min-height: 40px; flex-direction: row; justify-content: space-between; align-items: center; } }
   .straps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4) var(--s-5); }
   .straps figure { margin: 0; }
@@ -690,7 +690,7 @@ const css = getComputedStyle(document.documentElement);
 function ramp(el, prefix, steps) {
   el.innerHTML = steps.map((s) => {
     const hex = css.getPropertyValue(`--${prefix}-${s}`).trim();
-    const dark = ['600', '700', '800', '900', '950'].includes(String(s)) || (prefix === 'teal' && s === 500) || (prefix === 'n' && s === 500);
+    const dark = ['600', '700', '800', '900', '950'].includes(String(s)) || (prefix === 'teal' && s === 500);
     return `<div style="background:${hex};color:${dark ? '#fff' : 'var(--cf-black)'}"><span>${s}</span><b>${hex}</b></div>`;
   }).join('');
 }
