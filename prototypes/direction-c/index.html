@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order lanyards by the pack | Corpafly</title>
+<meta name="description" content="Order lanyards and break-away lanyards by the pack. Set colors and pack counts, see the price per lanyard, and check out.">
+<meta name="theme-color" content="#E9EEED">
+<link rel="icon" href="../../brand/logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../brand/logo/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../brand/logo/apple-touch-icon.png">
+<!-- Only the two Atkinson faces this direction uses are fetched; both are preloaded because they set the first screen. -->
+<link rel="preload" href="../shared/fonts/atkinson-hyperlegible-next.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../shared/fonts/atkinson-hyperlegible-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../shared/fonts/fonts.css">
+<link rel="stylesheet" href="../shared/tokens.css">
+<link rel="stylesheet" href="../shared/lanyard.css">
+<link rel="stylesheet" href="styles.css">
+<script type="module" src="main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#order">Skip to the order desk</a>
+
+<!-- ============ Header: glass chrome with a running cart total ============ -->
+<header class="hdr glass" id="top">
+  <div class="hdr__in wrap">
+    <a class="hdr__logo" href="#top"><img src="../../brand/logo/corpafly-lockup-small.svg" alt="Corpafly home" width="113" height="32"></a>
+    <nav class="hdr__nav" aria-label="Main">
+      <ul>
+        <li><a href="#order">Shop</a></li>
+        <li><a href="#break-away">Break-away</a></li>
+        <li><a href="#use-cases">For teams</a></li>
+        <li><a href="#help">Help</a></li>
+      </ul>
+    </nav>
+    <div class="hdr__tools">
+      <a class="icon-btn hdr__account" href="#reorder" aria-label="Account and past orders">
+        <svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-user"/></svg>
+      </a>
+      <button class="hdr__cart" id="cart-open" type="button" aria-haspopup="dialog" aria-controls="cart" aria-describedby="cart-state">
+        <svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-bag"/></svg>
+        <span class="hdr__cart-word">Cart</span>
+        <span class="hdr__cart-total num" data-roll="cart">$0.00</span>
+        <span class="hdr__cart-count num" id="cart-count" aria-hidden="true">0</span>
+      </button>
+      <span class="visually-hidden" id="cart-state">Empty</span>
+      <button class="icon-btn hdr__menu" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">
+        <svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-menu"/></svg>
+        <span class="visually-hidden">Menu</span>
+      </button>
+    </div>
+  </div>
+  <nav class="menu" id="menu" aria-label="Menu" hidden>
+    <ul class="wrap">
+      <li><a href="#order">Shop</a></li>
+      <li><a href="#break-away">Break-away</a></li>
+      <li><a href="#use-cases">For teams</a></li>
+      <li><a href="#help">Help</a></li>
+      <li><a href="#reorder">Account and past orders</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============ The order desk (first screen) ============ -->
+  <section class="desk-hero" id="order" aria-labelledby="order-title">
+    <div class="wrap desk-hero__grid">
+
+      <div class="desk-hero__left">
+        <h1 class="display" id="order-title" tabindex="-1">Order lanyards by the pack.</h1>
+        <p class="lede">Pick a type, set colors and packs, and check out from here.</p>
+
+        <form class="sheet builder" id="builder" aria-label="Order builder" novalidate>
+          <span class="ph-tag builder__ph">Placeholder prices</span>
+
+          <fieldset class="step">
+            <legend class="step__title"><span class="step__no num" aria-hidden="true">1</span>Type</legend>
+            <div class="types">
+              <label class="opt-card">
+                <input type="radio" name="type" value="standard" checked>
+                <span class="opt-card__name">Lanyard</span>
+                <span class="opt-card__desc">Standard. 100 pack.</span>
+                <span class="opt-card__from">from <b class="num">$0.27</b> each</span>
+                <span class="opt-card__art" aria-hidden="true"></span>
+              </label>
+              <label class="opt-card">
+                <input type="radio" name="type" value="breakaway">
+                <span class="opt-card__name">Break-Away Lanyard</span>
+                <span class="opt-card__desc">Releases when pulled. 25, 50 or 100 pack.</span>
+                <span class="opt-card__from">from <b class="num">$0.30</b> each</span>
+                <span class="opt-card__art opt-card__art--clasp" aria-hidden="true"></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="step">
+            <legend class="step__title"><span class="step__no num" aria-hidden="true">2</span>Pack<span class="step__aside" id="pack-note">Lanyard comes in the 100 pack only.</span></legend>
+            <div class="seg seg--packs">
+              <label class="seg__opt">
+                <input type="radio" name="pack" value="25" disabled>
+                <span class="seg__main"><b class="num">25</b> pack</span>
+                <span class="seg__sub">Break-Away only</span>
+              </label>
+              <label class="seg__opt">
+                <input type="radio" name="pack" value="50" disabled>
+                <span class="seg__main"><b class="num">50</b> pack</span>
+                <span class="seg__sub">Break-Away only</span>
+              </label>
+              <label class="seg__opt">
+                <input type="radio" name="pack" value="100" checked>
+                <span class="seg__main"><b class="num">100</b> pack</span>
+                <span class="seg__sub"><span class="num">$0.27</span> each</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="step">
+            <legend class="step__title"><span class="step__no num" aria-hidden="true">3</span>Colors and packs</legend>
+            <p class="notice" id="color-notice" role="status"></p>
+            <ul class="rows" id="rows">
+              <li class="row is-on" data-color="black" style="--strap:#1F1F1F">
+                <span class="chip" aria-hidden="true"></span>
+                <span class="row__text"><span class="row__name">Black</span><span class="row__meta num">100 lanyards</span></span>
+                <div class="stepper">
+                  <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Black packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="1" aria-label="Black, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="1">
+                  <button type="button" class="stepper__btn" data-step="1" aria-label="More Black packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
+                </div>
+              </li>
+              <li class="row" data-color="blue" style="--strap:#1E45A8">
+                <span class="chip" aria-hidden="true"></span>
+                <span class="row__text"><span class="row__name">Blue</span><span class="row__meta num">0 lanyards</span></span>
+                <div class="stepper">
+                  <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Blue packs" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Blue, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0">
+                  <button type="button" class="stepper__btn" data-step="1" aria-label="More Blue packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
+                </div>
+              </li>
+              <li class="row" data-color="green" style="--strap:#1F7A45">
+                <span class="chip" aria-hidden="true"></span>
+                <span class="row__text"><span class="row__name">Green</span><span class="row__meta num">0 lanyards</span></span>
+                <div class="stepper">
+                  <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Green packs" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Green, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0">
+                  <button type="button" class="stepper__btn" data-step="1" aria-label="More Green packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
+                </div>
+              </li>
+              <li class="row" data-color="red" style="--strap:#C42B2B">
+                <span class="chip" aria-hidden="true"></span>
+                <span class="row__text"><span class="row__name">Red</span><span class="row__meta num">0 lanyards</span></span>
+                <div class="stepper">
+                  <button type="button" class="stepper__btn" data-step="-1" aria-label="Fewer Red packs" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
+                  <input class="stepper__val num" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="Red, packs" role="spinbutton" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0">
+                  <button type="button" class="stepper__btn" data-step="1" aria-label="More Red packs"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
+                </div>
+              </li>
+            </ul>
+            <p class="step__hint">Mix colors to code teams, classes or roles.</p>
+            <button type="button" class="link-btn more-colors" id="more-colors">Yellow and Purple come in the Break-Away 25 pack</button>
+          </fieldset>
+
+          <!-- The tally pins to the bottom of the screen on desktop while the sheet scrolls (see styles.css). -->
+          <div class="tally" id="tally">
+            <div class="tally__main">
+              <div class="tally__unit">
+                <span class="tally__label">Per lanyard</span>
+                <span class="tally__big num" data-roll="unit">$0.27</span>
+              </div>
+              <dl class="tally__ledger">
+                <div><dt>Packs</dt><dd class="num" data-roll="packs">1</dd></div>
+                <div><dt>Lanyards</dt><dd class="num" data-roll="lanyards">100</dd></div>
+                <div><dt>Total</dt><dd class="num" data-roll="total">$26.87</dd></div>
+              </dl>
+            </div>
+            <div class="tally__actions">
+              <button type="submit" class="btn btn--primary" id="add">Add to cart</button>
+              <button type="button" class="btn btn--quiet" id="copy-link" aria-describedby="copy-status">
+                <svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-copy"/></svg>Copy order link
+              </button>
+            </div>
+            <p class="tally__help" id="copy-status" role="status">The order link opens this exact order for a colleague, ready to check out.</p>
+            <p class="visually-hidden" id="order-live" aria-live="polite" aria-atomic="true"></p>
+          </div>
+          <span class="tally-end" id="tally-end" aria-hidden="true"></span>
+        </form>
+      </div>
+
+      <div class="desk-hero__right">
+        <div class="desk niche" id="desk">
+          <div class="desk__stage" id="stage" aria-hidden="true"></div>
+          <p class="desk__caption">
+            <span class="desk__label">Preview</span>
+            <span class="desk__product" id="desk-product">Lanyard, 100 pack</span>
+            <span class="desk__note">Illustration. Strap colors are close matches.</span>
+          </p>
+
+          <!-- The receipt: the main glass moment. It floats over the hanging lanyards and reads like an order ticket. -->
+          <section class="ticket glass glass--text" id="ticket" aria-labelledby="ticket-title">
+            <div class="ticket__head">
+              <h2 class="ticket__title" id="ticket-title">Your order</h2>
+              <span class="ph-tag">Placeholder price</span>
+            </div>
+            <p class="ticket__product" id="ticket-product">Lanyard, 100 pack</p>
+            <div class="ticket__pad">
+              <ol class="ticket__lines" id="ticket-lines"></ol>
+              <p class="ticket__empty" id="ticket-empty" hidden>No packs yet. Set any color to 1.</p>
+            </div>
+            <dl class="ticket__totals">
+              <div class="ticket__count"><dt class="visually-hidden">Packs and lanyards</dt><dd id="ticket-count">1 pack, 100 lanyards</dd></div>
+              <div><dt>Per lanyard</dt><dd class="num" data-roll="ticket-unit">$0.27</dd></div>
+              <div class="ticket__total"><dt>Total</dt><dd class="num" data-roll="ticket-total">$26.87</dd></div>
+            </dl>
+          </section>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Phone and tablet: a glass summary bar while the builder's own Add button is off screen. -->
+  <div class="buybar glass glass--text" id="buybar">
+    <div class="buybar__nums">
+      <span class="buybar__total num" data-roll="bar-total">$26.87</span>
+      <span class="buybar__unit"><span class="num" id="bar-unit">$0.27</span> per lanyard <span class="ph-tag">Placeholder</span></span>
+    </div>
+    <button type="button" class="btn btn--primary buybar__add" id="bar-add">Add to cart</button>
+  </div>
+
+  <!-- ============ Finder ============ -->
+  <section class="section finder" id="finder" aria-labelledby="finder-title">
+    <div class="wrap finder__grid">
+      <div class="finder__intro">
+        <h2 class="h2" id="finder-title">Not sure what to order?</h2>
+        <p class="deck">Answer 3 questions. You get an order with the math shown, ready to load.</p>
+      </div>
+
+      <form class="sheet finder__form" id="finder-form" aria-label="Order finder" novalidate>
+        <fieldset class="q">
+          <legend class="q__title">How many people?</legend>
+          <div class="q__body">
+            <div class="stepper stepper--lg">
+              <button type="button" class="stepper__btn" data-step="-10" aria-label="10 fewer people"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-minus"/></svg></button>
+              <input class="stepper__val num" id="people" type="text" inputmode="numeric" autocomplete="off" value="80" aria-label="Number of people" aria-describedby="people-hint" role="spinbutton" aria-valuemin="1" aria-valuemax="9999" aria-valuenow="80">
+              <button type="button" class="stepper__btn" data-step="10" aria-label="10 more people"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-plus"/></svg></button>
+            </div>
+            <p class="q__hint" id="people-hint">Count everyone who needs a lanyard.</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="q">
+          <legend class="q__title">Who wears them?</legend>
+          <div class="choice">
+            <label class="opt-card">
+              <input type="radio" name="wear" value="work" checked>
+              <span class="opt-card__name">Adults at work</span>
+              <span class="opt-card__desc">Offices, events, visitors</span>
+            </label>
+            <label class="opt-card">
+              <input type="radio" name="wear" value="safety">
+              <span class="opt-card__name">Kids, or anywhere a caught strap is a risk</span>
+              <span class="opt-card__desc">Schools, hospitals, warehouses</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="q">
+          <legend class="q__title">Color-code by group?</legend>
+          <div class="seg seg--groups">
+            <label class="seg__opt"><input type="radio" name="groups" value="0" checked><span class="seg__main">None</span></label>
+            <label class="seg__opt"><input type="radio" name="groups" value="2"><span class="seg__main num">2</span></label>
+            <label class="seg__opt"><input type="radio" name="groups" value="3"><span class="seg__main num">3</span></label>
+            <label class="seg__opt"><input type="radio" name="groups" value="4"><span class="seg__main num">4</span></label>
+            <label class="seg__opt"><input type="radio" name="groups" value="5"><span class="seg__main num">5</span></label>
+            <label class="seg__opt"><input type="radio" name="groups" value="6"><span class="seg__main num">6</span></label>
+          </div>
+          <p class="q__hint">One color per class, team or role.</p>
+        </fieldset>
+      </form>
+
+      <div class="finder__result niche">
+        <div class="finder__strands" id="finder-strands" aria-hidden="true"></div>
+        <section class="result glass glass--text" aria-labelledby="result-title">
+          <div class="result__head">
+            <h3 class="result__label" id="result-title">Suggested order</h3>
+            <span class="ph-tag">Placeholder price</span>
+          </div>
+          <div class="result__body" id="result-body" aria-live="polite">
+            <p class="result__order"><span class="num">1 ×</span> Lanyard, 100 pack</p>
+            <p class="result__colors">in Black</p>
+            <dl class="result__facts">
+              <div><dt>Lanyards</dt><dd><span class="num">100</span> for 80 people, <span class="num">20</span> spare</dd></div>
+              <div><dt>Per lanyard</dt><dd class="num">$0.27</dd></div>
+              <div><dt>Total</dt><dd class="num result__total">$26.87</dd></div>
+            </dl>
+            <p class="result__why">Lowest total that covers 80 people.</p>
+            <p class="result__alt">Also fits: 1 × Break-Away Lanyard, 100 pack. $29.87, 20 spare.</p>
+          </div>
+          <button type="button" class="btn btn--primary result__use" id="use-rec">
+            Use this order<svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-arrow-right"/></svg>
+          </button>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Reorder strip ============ -->
+  <section class="reorder" id="reorder" aria-labelledby="reorder-title">
+    <div class="wrap reorder__in">
+      <h2 class="reorder__title" id="reorder-title">Ordered before?</h2>
+      <p class="reorder__text">Sign in and use <b>Buy again</b> on any past order. Or send an order link: copy it from the order desk or your cart, and it opens the same order for whoever you send it to.</p>
+      <a class="btn btn--quiet reorder__btn" href="#signin">Sign in</a>
+    </div>
+  </section>
+
+  <!-- ============ Compare ============ -->
+  <section class="section compare" id="range" aria-labelledby="compare-title">
+    <div class="wrap split">
+      <header class="split__head">
+        <h2 class="h2" id="compare-title">Lanyard or Break-Away Lanyard?</h2>
+        <p class="deck">Same flat polyester strap and swivel metal J-hook. The difference is at the neck.</p>
+      </header>
+      <div class="sheet compare__sheet">
+        <table class="compare__table" role="table">
+          <caption class="visually-hidden">Lanyard and Break-Away Lanyard compared</caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <td class="compare__corner" role="cell"></td>
+              <th scope="col" role="columnheader">
+                <span class="compare__art" data-art="plain"></span>
+                <span class="compare__name">Lanyard</span>
+              </th>
+              <th scope="col" role="columnheader">
+                <span class="compare__art" data-art="clasp"></span>
+                <span class="compare__name">Break-Away Lanyard</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            <tr role="row">
+              <th scope="row" role="rowheader">Clasp</th>
+              <td role="cell">None. One piece.</td>
+              <td role="cell">Safety clasp at the neck. It opens when the strap is pulled.</td>
+            </tr>
+            <tr role="row">
+              <th scope="row" role="rowheader">Packs</th>
+              <td role="cell"><span class="num">100</span></td>
+              <td role="cell"><span class="num">25, 50, 100</span></td>
+            </tr>
+            <tr role="row">
+              <th scope="row" role="rowheader">Colors</th>
+              <td role="cell">
+                <ul class="swatches">
+                  <li style="--strap:#1F1F1F"><span class="chip chip--sm" aria-hidden="true"></span>Black</li>
+                  <li style="--strap:#1E45A8"><span class="chip chip--sm" aria-hidden="true"></span>Blue</li>
+                  <li style="--strap:#1F7A45"><span class="chip chip--sm" aria-hidden="true"></span>Green</li>
+                  <li style="--strap:#C42B2B"><span class="chip chip--sm" aria-hidden="true"></span>Red</li>
+                </ul>
+              </td>
+              <td role="cell">
+                <p class="compare__sub">25 pack</p>
+                <ul class="swatches">
+                  <li style="--strap:#1F1F1F"><span class="chip chip--sm" aria-hidden="true"></span>Black</li>
+                  <li style="--strap:#1E45A8"><span class="chip chip--sm" aria-hidden="true"></span>Blue</li>
+                  <li style="--strap:#1F7A45"><span class="chip chip--sm" aria-hidden="true"></span>Green</li>
+                  <li style="--strap:#C42B2B"><span class="chip chip--sm" aria-hidden="true"></span>Red</li>
+                  <li style="--strap:#F2C12E"><span class="chip chip--sm" aria-hidden="true"></span>Yellow</li>
+                  <li style="--strap:#5E2D8C"><span class="chip chip--sm" aria-hidden="true"></span>Purple</li>
+                </ul>
+                <p class="compare__sub">50 and 100 pack</p>
+                <ul class="swatches">
+                  <li style="--strap:#1F1F1F"><span class="chip chip--sm" aria-hidden="true"></span>Black</li>
+                  <li style="--strap:#1E45A8"><span class="chip chip--sm" aria-hidden="true"></span>Blue</li>
+                </ul>
+              </td>
+            </tr>
+            <tr role="row">
+              <th scope="row" role="rowheader">Per lanyard, from</th>
+              <td role="cell"><span class="compare__price num">$0<span class="pt">.</span>27</span><span class="compare__per">100 pack</span></td>
+              <td role="cell"><span class="compare__price num">$0<span class="pt">.</span>30</span><span class="compare__per">100 pack. <span class="num">$0.36</span> in the 50, <span class="num">$0.43</span> in the 25.</span></td>
+            </tr>
+          </tbody>
+          <tfoot role="rowgroup">
+            <tr role="row">
+              <td role="cell"></td>
+              <td role="cell"><button type="button" class="btn btn--quiet" data-load="standard-100:black.1">Order Lanyard</button></td>
+              <td role="cell"><button type="button" class="btn btn--quiet" data-load="breakaway-100:black.1">Order Break-Away</button></td>
+            </tr>
+          </tfoot>
+        </table>
+        <p class="compare__note"><span class="ph-tag">Placeholder price</span> Every price in this table is a placeholder until launch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Break-away pull demo ============ -->
+  <section class="section pull" id="break-away" aria-labelledby="pull-title">
+    <div class="wrap pull__grid">
+      <div class="pull__copy">
+        <h2 class="h2" id="pull-title">Break-away, in plain words.</h2>
+        <p>The Break-Away Lanyard has a safety clasp at the back of the neck. If the strap is caught or pulled, the clasp opens and the lanyard comes off.</p>
+        <p>Choose it for kids and schools, hospitals and warehouses, or anywhere a caught strap is a risk.</p>
+        <dl class="pull__facts">
+          <div><dt>Where</dt><dd>Back of the neck</dd></div>
+          <div><dt>Release force</dt><dd><span class="ph-tag">To confirm</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="sheet pull__bench" id="pull">
+        <p class="pull__caption" id="pull-caption" aria-live="polite">Pull the strap end.</p>
+        <div class="pull__stage niche">
+          <div class="pull__art" id="pull-art" style="--strap:#1E45A8"></div>
+          <div class="pull__handle" id="pull-handle" role="slider" tabindex="0" aria-label="Strap end" aria-describedby="pull-help" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Not pulled">
+            <span class="pull__hint" aria-hidden="true">Pull<svg class="icon"><use href="../shared/icons.svg#i-arrow-right"/></svg></span>
+          </div>
+        </div>
+        <div class="pull__gauge" aria-hidden="true">
+          <span class="pull__gauge-label">Tension</span>
+          <span class="pull__track"><span class="pull__fill" id="pull-fill"></span></span>
+          <span class="pull__gauge-mark">Opens</span>
+        </div>
+        <p class="pull__help" id="pull-help">Drag the strap end to the right. With a keyboard, focus it, then hold the right arrow key or press Enter.</p>
+        <!-- Reduced motion: two still states instead of the drag. -->
+        <div class="seg seg--states" id="pull-states" role="radiogroup" aria-label="Clasp state">
+          <label class="seg__opt"><input type="radio" name="pull-state" value="before" checked><span class="seg__main">Before</span></label>
+          <label class="seg__opt"><input type="radio" name="pull-state" value="after"><span class="seg__main">After</span></label>
+        </div>
+        <button type="button" class="btn btn--quiet pull__reset" id="pull-reset">
+          <svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-arrow-counter"/></svg>Reset
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Use cases ============ -->
+  <section class="section uses" id="use-cases" aria-labelledby="uses-title">
+    <div class="wrap split">
+      <header class="split__head">
+        <h2 class="h2" id="uses-title">Common orders, ready to load.</h2>
+        <p class="deck">Start from one, then change the colors and packs.</p>
+      </header>
+      <ul class="uses__list">
+        <li class="use">
+          <h3 class="use__name">Offices</h3>
+          <p class="use__line">Staff in Black, visitors in Blue.</p>
+          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1F1F1F"></span><span class="chip chip--sm" style="--strap:#1E45A8"></span></span><span>Lanyard, 100 pack. Black <span class="num">×2</span>, Blue <span class="num">×1</span></span></p>
+          <button type="button" class="btn btn--quiet use__btn" data-load="standard-100:black.2,blue.1">Load this order<span class="visually-hidden">: Offices</span></button>
+        </li>
+        <li class="use">
+          <h3 class="use__name">Schools</h3>
+          <p class="use__line">Break-away for students, one color per class.</p>
+          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1E45A8"></span><span class="chip chip--sm" style="--strap:#1F7A45"></span><span class="chip chip--sm" style="--strap:#C42B2B"></span><span class="chip chip--sm" style="--strap:#F2C12E"></span></span><span>Break-Away, 25 pack. Blue, Green, Red, Yellow <span class="num">×1</span> each</span></p>
+          <button type="button" class="btn btn--quiet use__btn" data-load="breakaway-25:blue.1,green.1,red.1,yellow.1">Load this order<span class="visually-hidden">: Schools</span></button>
+        </li>
+        <li class="use">
+          <h3 class="use__name">Events</h3>
+          <p class="use__line">Color-code staff, speakers and guests.</p>
+          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1F1F1F"></span><span class="chip chip--sm" style="--strap:#1E45A8"></span><span class="chip chip--sm" style="--strap:#C42B2B"></span></span><span>Lanyard, 100 pack. Black <span class="num">×1</span>, Blue <span class="num">×3</span>, Red <span class="num">×1</span></span></p>
+          <button type="button" class="btn btn--quiet use__btn" data-load="standard-100:black.1,blue.3,red.1">Load this order<span class="visually-hidden">: Events</span></button>
+        </li>
+        <li class="use">
+          <h3 class="use__name">Travel</h3>
+          <p class="use__line">Cruise cards and room keys. One small pack.</p>
+          <p class="use__spec"><span class="use__chips"><span class="chip chip--sm" style="--strap:#1E45A8"></span></span><span>Break-Away, 25 pack. Blue <span class="num">×1</span></span></p>
+          <button type="button" class="btn btn--quiet use__btn" data-load="breakaway-25:blue.1">Load this order<span class="visually-hidden">: Travel</span></button>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ Specs and video ============ -->
+  <section class="section specs" id="specs" aria-labelledby="specs-title">
+    <div class="wrap split">
+      <header class="split__head">
+        <h2 class="h2" id="specs-title">Specs</h2>
+        <p class="deck">The same order on every product page. Numbers we have not confirmed are marked.</p>
+      </header>
+      <div class="specs__body">
+        <div class="sheet specs__sheet">
+          <table class="spec-table">
+            <caption class="visually-hidden">Specs for both lanyards</caption>
+            <thead>
+              <tr><td></td><th scope="col">Lanyard</th><th scope="col">Break-Away Lanyard</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Strap</th><td>Flat polyester</td><td>Flat polyester</td></tr>
+              <tr><th scope="row">Hook</th><td>Swivel metal J-hook</td><td>Swivel metal J-hook</td></tr>
+              <tr><th scope="row">Clasp</th><td>None, one piece</td><td>Safety break-away, at the neck. Release force <span class="ph-tag">To confirm</span></td></tr>
+              <tr><th scope="row">Length</th><td><span class="ph-tag">To confirm</span></td><td><span class="ph-tag">To confirm</span></td></tr>
+              <tr><th scope="row">Width</th><td><span class="ph-tag">To confirm</span></td><td><span class="ph-tag">To confirm</span></td></tr>
+              <tr><th scope="row">Pack</th><td><span class="num">100</span></td><td><span class="num">25, 50, 100</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="specs__media">
+          <figure class="photo">
+            <picture>
+              <source type="image/avif" srcset="../../brand/assets/web/hooks-black-640.avif 640w, ../../brand/assets/web/hooks-black.avif 1020w" sizes="(min-width: 1100px) 300px, (min-width: 700px) 45vw, 92vw">
+              <img src="../../brand/assets/web/hooks-black-640.webp" srcset="../../brand/assets/web/hooks-black-640.webp 640w, ../../brand/assets/web/hooks-black.webp 1020w" sizes="(min-width: 1100px) 300px, (min-width: 700px) 45vw, 92vw" width="640" height="452" fetchpriority="low" decoding="async" alt="A bundle of black lanyards with swivel metal J-hooks.">
+            </picture>
+            <figcaption>Black, J-hook ends</figcaption>
+          </figure>
+          <figure class="photo">
+            <picture>
+              <source type="image/avif" srcset="../../brand/assets/web/hooks-blue-640.avif 640w, ../../brand/assets/web/hooks-blue.avif 1020w" sizes="(min-width: 1100px) 300px, (min-width: 700px) 45vw, 92vw">
+              <img src="../../brand/assets/web/hooks-blue-640.webp" srcset="../../brand/assets/web/hooks-blue-640.webp 640w, ../../brand/assets/web/hooks-blue.webp 1020w" sizes="(min-width: 1100px) 300px, (min-width: 700px) 45vw, 92vw" width="640" height="452" fetchpriority="low" decoding="async" alt="A bundle of blue lanyards with swivel metal J-hooks.">
+            </picture>
+            <figcaption>Blue, J-hook ends</figcaption>
+          </figure>
+          <figure class="video">
+            <div class="video__frame niche">
+              <svg class="icon video__play" aria-hidden="true"><use href="../shared/icons.svg#i-play"/></svg>
+              <span class="video__label">Product video</span>
+            </div>
+            <figcaption>The product video plays here. <span class="ph-tag">Placeholder</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Reviews (empty state) ============ -->
+  <section class="section reviews" id="reviews" aria-labelledby="reviews-title">
+    <div class="wrap split">
+      <header class="split__head">
+        <h2 class="h2" id="reviews-title">Reviews</h2>
+      </header>
+      <div class="empty">
+        <p class="empty__title">No reviews yet.</p>
+        <p>Reviews from verified buyers will appear here.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Trust row: checkable facts only ============ -->
+  <section class="trust" aria-label="Store facts">
+    <ul class="wrap trust__list">
+      <li>Secure checkout by Shopify</li>
+      <li>Ships from US warehouses</li>
+      <li>CORPAFLY LLC, Texas</li>
+      <li><a href="#help">Questions? Contact us</a></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="ftr" id="help">
+  <div class="wrap ftr__grid">
+    <div class="ftr__brand">
+      <img src="../../brand/logo/corpafly-lockup-small.svg" alt="Corpafly" width="127" height="36" loading="lazy">
+      <p>Lanyards and break-away lanyards in bulk packs.</p>
+    </div>
+    <nav class="ftr__col" aria-labelledby="ftr-shop">
+      <h2 id="ftr-shop">Shop</h2>
+      <ul>
+        <li><a href="#range">Lanyard</a></li>
+        <li><a href="#break-away">Break-Away Lanyard</a></li>
+        <li><a href="#order">Order desk</a></li>
+      </ul>
+    </nav>
+    <nav class="ftr__col" aria-labelledby="ftr-help">
+      <h2 id="ftr-help">Help</h2>
+      <ul>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#shipping">Shipping</a></li>
+        <li><a href="#returns">Returns</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <nav class="ftr__col" aria-labelledby="ftr-company">
+      <h2 id="ftr-company">Company</h2>
+      <ul>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap ftr__base">
+    <p>&copy; 2026 CORPAFLY LLC</p>
+    <ul class="ftr__policies">
+      <li><a href="#privacy">Privacy policy</a></li>
+      <li><a href="#terms">Terms of service</a></li>
+      <li><a href="#refunds">Refund policy</a></li>
+      <li><a href="#shipping-policy">Shipping policy</a></li>
+    </ul>
+    <p class="ftr__note">Prices shown are placeholders.</p>
+  </div>
+</footer>
+
+<!-- ============ Cart drawer (glass) ============ -->
+<dialog class="drawer glass glass--text" id="cart" aria-labelledby="cart-title">
+  <div class="drawer__in">
+    <div class="drawer__head">
+      <h2 class="drawer__title" id="cart-title">Cart</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Close cart">
+        <svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-close"/></svg>
+      </button>
+    </div>
+    <p class="drawer__sum" id="cart-sum">Empty</p>
+    <ul class="drawer__lines" id="cart-lines"></ul>
+    <p class="drawer__empty" id="cart-empty">Your cart is empty. Build an order on the order desk.</p>
+    <div class="drawer__foot">
+      <dl class="drawer__subtotal"><dt>Subtotal</dt><dd class="num" id="cart-subtotal">$0.00</dd></dl>
+      <p class="drawer__fine">Shipping calculated at checkout. <span class="ph-tag">Placeholder price</span></p>
+      <a class="btn btn--primary btn--block" id="checkout" href="#checkout">Check out</a>
+      <button type="button" class="btn btn--quiet btn--block" id="cart-copy">
+        <svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#i-copy"/></svg>Copy reorder link
+      </button>
+      <p class="drawer__status" id="cart-status" role="status">Secure checkout by Shopify.</p>
+    </div>
+  </div>
+</dialog>
+</body>
+</html>
