@@ -52,9 +52,9 @@ function initHeader() {
 function initHero() {
   const hang = $('[data-hang]');
   $('[data-hero-lanyard]').innerHTML = hangingLanyard({ type: 'standard', title: 'Lanyard' }).svg;
-  // Same length and bend for all three, so they lie as one parallel bundle.
-  $('[data-hero-strands]').innerHTML = [1, 2, 3]
-    .map((n) => `<span class="hero-strand hero-strand--${n}">${strand({ length: 300, bend: 0.12 })}</span>`)
+  // Four strands with the same length and bend, so they lie as one parallel set under the badge.
+  $('[data-hero-strands]').innerHTML = [1, 2, 3, 4]
+    .map((n) => `<span class="hero-strand hero-strand--${n}">${strand({ length: 480, bend: 0.06 })}</span>`)
     .join('');
   // The drop waits on its first frame (see styles.css) until the lanyard exists; start it on the next frame.
   requestAnimationFrame(() => document.documentElement.classList.add('hero-go'));
@@ -123,7 +123,6 @@ const buy = (() => {
     unit: $('[data-summary-unit]', form),
     save: $('[data-summary-save]', form),
     addPrice: $('[data-add-price]', form),
-    bundle: $('[data-buy-bundle]'),
     stickyDot: $('[data-sticky-dot]'),
     stickyDesc: $('[data-sticky-desc]'),
     stickyTotal: $('[data-sticky-total]'),
@@ -168,7 +167,6 @@ const buy = (() => {
     el.moreColors.textContent = `${extra} more colors in the ${smallestPack(product).size} pack`;
 
     if (document.activeElement !== el.qty) el.qty.value = state.qty;
-    el.bundle.style.setProperty('--strap', `var(--strap-${state.color})`);   // glides via @property
 
     const total = money(cents(pack.price * state.qty));
     const each = money(perUnit(pack.price, pack.size));
@@ -379,9 +377,6 @@ const cart = (() => {
 function initDrawings() {
   $$('[data-plinth]').forEach((node) => { node.innerHTML = hangingLanyard({ type: node.dataset.plinth }).svg; });
   $$('[data-samples] .sample__strand').forEach((node) => { node.innerHTML = strand({ length: 250, bend: 0.04 }); });
-  $('[data-buy-bundle]').innerHTML = [1, 2, 3]
-    .map((n) => `<span class="buy-strand buy-strand--${n}">${strand({ length: 1000, bend: 0.05 })}</span>`)
-    .join('');
   $('[data-video-poster]').innerHTML = [1, 2]
     .map((n) => `<span class="poster-strand poster-strand--${n}">${strand({ length: 520, bend: 0.1 })}</span>`)
     .join('');

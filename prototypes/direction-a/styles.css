@@ -20,6 +20,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: calc(var(--header-h) + 16px);   /* WCAG 2.4.11: the fixed header never hides a focused target */
+  scroll-padding-bottom: 96px;                         /* ...and the sticky buy bar never hides one at the bottom */
   scrollbar-gutter: stable;
 }
 html.is-locked { overflow: hidden; }
@@ -111,7 +112,10 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .site-header::before, .site-header::after {
   content: ""; position: absolute; inset: 0; z-index: -1; height: var(--header-h); pointer-events: none;
 }
-.site-header::before { background: var(--glass-fallback); box-shadow: 0 1px 0 var(--glass-hairline); }
+.site-header::before {   /* white rim on the lower edge of the pane, then a hairline: the glass reads as a pane */
+  background: var(--glass-fallback);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.7), 0 1px 0 var(--glass-hairline);
+}
 .site-header::after { background: rgba(255, 255, 255, 0.364); opacity: 0; }  /* 56% tint + this = 72% */
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .site-header::before {
@@ -201,15 +205,7 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
   position: relative;
   height: calc(var(--badge-top) + var(--badge-h) + 40px);
   margin-top: var(--s-5);
-  overflow-y: clip;                                       /* the loop never climbs over the copy */
-}
-/* On phones the visual starts below the copy, so the straps fade in from above instead of being cut.
-   --crop is where the visual's top edge falls inside the lanyard box. The mask sits on the lanyard only,
-   never on an ancestor of the glass badge (a mask there would stop the badge blurring the strands). */
-.hang__lanyard {
-  --crop: calc(525.64px * var(--s) - var(--anchor-y));
-  -webkit-mask: linear-gradient(to bottom, transparent var(--crop), #000 calc(var(--crop) + 72px));
-  mask: linear-gradient(to bottom, transparent var(--crop), #000 calc(var(--crop) + 72px));
+  overflow-y: clip;          /* phones: the strap is cut cleanly by the top of the visual, never over the copy */
 }
 
 .hang {
@@ -282,7 +278,8 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .badge__name { margin-top: 14px; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; }
 .badge__spec { margin-top: 4px; font-size: 0.8125rem; color: var(--on-glass-muted); }
 .badge__price { display: flex; flex-direction: column; margin-top: auto; }
-.badge__amount { font-size: calc(var(--badge-w) * 0.215); line-height: 1; letter-spacing: -0.02em; }
+/* Large prices are set in Instrument Sans with tabular figures: monospace spaces the point too wide at this size */
+.badge__amount { font-size: calc(var(--badge-w) * 0.24); font-weight: 500; line-height: 1; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
 .badge__per { margin-top: 6px; font-size: 0.8125rem; color: var(--on-glass-muted); }
 .badge .ph-tag { align-self: flex-start; margin-top: 8px; }
 .badge__meta {
@@ -303,20 +300,22 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .badge-swatch:has(:checked) .badge-swatch__name { color: var(--ink); }
 .badge-swatch:has(:focus-visible) { outline: 2px solid var(--cf-teal); outline-offset: 0; }
 
-/* Loose strands, laid as one parallel bundle behind the badge's resting box: the glass always has
-   real woven colour to blur, and the ends show crisp outside the sleeve. Page rule for A: glass in the
-   content always sits over strap, never over a gradient. */
+/* The badge's four colours, laid under it as one sample set: one shared angle, equal length, even
+   spacing, running the width of the column behind the badge. The glass always has real woven colour to
+   blur, and the ends show crisp outside the sleeve. Page rule for A: glass sits over strap, never a gradient. */
 .hero__strands {
+  --gap: calc(var(--badge-w) * 0.105);                   /* centre to centre: about 27px at desktop */
   position: absolute;
-  width: var(--badge-w); height: var(--badge-h);
-  left: calc(50% - var(--badge-w) / 2); top: var(--badge-top);
-  rotate: -11deg;
+  width: calc(var(--badge-w) * 2.4); left: calc(50% - var(--badge-w) * 1.2);
+  top: calc(var(--badge-top) + var(--badge-h) * 0.55);
+  rotate: -8deg;
 }
-.hero-strand { position: absolute; left: -34%; width: 168%; top: 50%; display: block; translate: 0 -50%; }
+.hero-strand { position: absolute; left: 0; width: 100%; top: 0; display: block; translate: 0 -50%; }
 .hero-strand svg { width: 100%; height: auto; }
-.hero-strand--1 { --strap: var(--strap-blue);   margin-top: calc(var(--badge-w) * -0.11); }
-.hero-strand--2 { --strap: var(--strap-green);  margin-top: 0; left: -26%; }
-.hero-strand--3 { --strap: var(--strap-yellow); margin-top: calc(var(--badge-w) * 0.11); left: -40%; }
+.hero-strand--1 { --strap: var(--strap-black); margin-top: calc(var(--gap) * -1.5); }
+.hero-strand--2 { --strap: var(--strap-blue);  margin-top: calc(var(--gap) * -0.5); }
+.hero-strand--3 { --strap: var(--strap-green); margin-top: calc(var(--gap) * 0.5); }
+.hero-strand--4 { --strap: var(--strap-red);   margin-top: calc(var(--gap) * 1.5); }
 
 /* THE PRODUCT MOMENT: drop in from slightly above, one soft pendulum swing, once. Paused (on its first
    frame) until main.js has drawn the lanyard, then released by .hero-go. Reduced motion: final frame. */
@@ -353,10 +352,8 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
     --slot-h: 12px;
     margin-top: 0;
     height: calc(var(--badge-top) + var(--badge-h) + 64px);
-    overflow-y: visible;
+    overflow-y: visible;      /* desktop: the strap runs on up behind the glass header at full opacity */
   }
-  /* On desktop the straps run up under the glass header, which blurs them: no fade needed */
-  .hang__lanyard { -webkit-mask: none; mask: none; }
   .badge { padding-inline: 22px; }
   .badge__name { font-size: 1.5rem; }
 }
@@ -374,26 +371,21 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 
 /* ---------- Buy band ---------- */
 .buy { position: relative; overflow: clip; background: var(--n-50); padding-block: var(--section-pad); }
-.buy__grid { position: relative; z-index: 1; display: grid; gap: var(--s-7); }   /* above the strap */
+.buy__grid { display: grid; gap: var(--s-7); }
 .buy__intro { display: grid; gap: var(--s-4); align-content: start; }
 .buy__facts { display: grid; border-top: 1px solid var(--line); }
 .buy__facts div { display: flex; justify-content: space-between; gap: var(--s-4); padding: 12px 0; border-bottom: 1px solid var(--line); }
 .buy__facts dd { font-size: 0.9375rem; text-align: right; }
-.buy__stage { position: relative; }
-.buy__bundle { display: none; }
-
-.buy-panel { display: grid; gap: var(--s-5); padding: var(--s-5); border-radius: var(--r-lg); z-index: 1; }
-/* On phones the panel fills most of the screen, and glass cost grows with area: it keeps the rim and
-   drops the blur (tokens: keep scrolling glass under about 10% of the screen). */
-@media (max-width: 899px) {
-  .buy-panel.glass { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--n-0); }
+/* The buy panel is a solid white sheet: forms never sit on glass (research/01, section 3). */
+.buy-panel {
+  display: grid; gap: var(--s-5); padding: var(--s-5);
+  background: var(--n-0); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-2);
 }
 .field { display: grid; gap: 10px; }
 .field__label { display: block; }
 .field__value { color: var(--ink); }
-.field__note { font-size: 0.875rem; color: var(--on-glass-muted); }
+.field__note { font-size: 0.875rem; color: var(--muted); }
 .field__note:empty { display: none; }
-.buy-panel .label { color: var(--on-glass-muted); }
 
 /* Segmented controls: native radios, so arrow keys and screen readers work without script */
 .segmented { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
@@ -404,7 +396,7 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 }
 .seg input, .swatch input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
 .seg__main { font-weight: 500; font-size: 0.9375rem; line-height: 1.2; }
-.seg__sub { font-size: 12.5px; color: var(--on-glass-muted); }
+.seg__sub { font-size: 12.5px; color: var(--muted); }
 .segmented--product .seg { min-height: 48px; justify-items: center; text-align: center; }
 .seg:hover { border-color: var(--ink); }
 .seg:has(:checked) { border-color: var(--ring); box-shadow: inset 0 0 0 1px var(--ring); background: var(--teal-50); }
@@ -451,15 +443,15 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 .summary { display: grid; gap: 6px; padding-top: var(--s-5); border-top: 1px solid var(--line); }
 .summary__line { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
 .summary__count { font-size: 0.875rem; }
-.summary__total { font-size: clamp(1.625rem, 1.3rem + 1vw, 2.125rem); line-height: 1; letter-spacing: -0.03em; }
-.summary__unit { font-size: 0.9375rem; color: var(--on-glass-muted); }
+.summary__total { font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem); font-weight: 500; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.summary__unit { font-size: 0.9375rem; color: var(--muted); }
 .summary__unit .mono { color: var(--ink); }
 .summary__save { margin-left: 6px; padding: 2px 8px; border-radius: var(--r-pill); background: var(--n-100); color: var(--ink); font-size: 12px; }
 .summary__ph { margin-top: calc(-1 * var(--s-3)); }
 .btn--add { width: 100%; min-height: 52px; font-size: 1.0625rem; gap: 12px; }
 .btn__price { font-size: 0.9375rem; }
 .btn__price::before { content: "· "; }
-.buy-panel__note { margin-top: calc(-1 * var(--s-3)); font-size: 0.8125rem; color: var(--on-glass-muted); text-align: center; }
+.buy-panel__note { margin-top: calc(-1 * var(--s-3)); font-size: 0.8125rem; color: var(--muted); text-align: center; }
 
 @media (min-width: 900px) {
   .buy__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: var(--col-gap); row-gap: 0; }
@@ -468,18 +460,6 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
   .buy__stage { grid-column: 6 / 13; grid-row: 1 / 3; }
   .buy-panel { padding: 32px; gap: 26px; }
   .field--qty { grid-template-columns: 1fr; gap: 10px; }
-  /* Three straps in the chosen colour, a pack's worth, lie under the panel like samples under a glass
-     desk pad: crisp outside the glass, frosted under it, gliding to each new colour. They cross the
-     empty half of the Packs row, and run out under the empty lower half of the left column. */
-  .buy__intro, .buy__facts { position: relative; z-index: 1; }
-  .buy__bundle {
-    display: block; position: absolute; z-index: 0;
-    width: 1500px; left: -280px; top: 56%; rotate: -5deg;
-  }
-  .buy-strand { position: absolute; left: 0; width: 100%; top: 0; display: block; translate: 0 -50%; }
-  .buy-strand svg { width: 100%; height: auto; }
-  .buy-strand--1 { margin-top: -26px; left: 22px; }   /* staggered cut ends: a loose bundle, not a stripe */
-  .buy-strand--3 { margin-top: 26px; left: 44px; }
 }
 
 /* ---------- Range: two rows, alternating, no card boxes ---------- */
@@ -653,13 +633,13 @@ h3 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
 }
 .play .icon { width: 26px; height: 26px; margin-left: 4px; }
 .play:hover { --glass-tint: rgba(255, 255, 255, 0.72); }
-.video__text { display: grid; gap: var(--s-2); align-content: end; }
+.video__text { display: grid; gap: var(--s-2); align-content: start; }
 .video__text h2 { font-size: var(--fs-xl); }
 .video__status { color: var(--n-700); }
 @media (min-width: 900px) {
-  .video__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); align-items: end; }
+  .video__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); align-items: start; }
   .video-frame { grid-column: 1 / 9; }
-  .video__text { grid-column: 10 / 13; padding-bottom: 4px; }
+  .video__text { grid-column: 9 / 13; padding-top: 2px; }   /* top-aligned with the frame */
 }
 
 /* ---------- Reviews and reorder ---------- */

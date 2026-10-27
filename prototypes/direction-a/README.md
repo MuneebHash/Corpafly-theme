@@ -3,17 +3,16 @@
 **The idea.** An ID badge sleeve is the clearest object in any office, so here it is the brand's glass: the lanyard hangs in space and every price reads cleanly through the badge on its hook. The rest is bright, quiet and exact, with teal only where you act.
 
 **What is glass**
-- Header: tint rises from 56% to 72% over the first 80px of scroll.
+- Header: tint rises from 56% to 72% over the first 80px of scroll; the hero strap runs up behind it.
 - Hero badge: the product card, with a punched slot for the J-hook.
-- Buy panel. On phones it drops the blur (it fills the screen).
 - Sticky buy bar, cart drawer, video play button.
 
-Glass in the content always sits over real woven strap, never a gradient.
+Glass sits over real woven strap, never a gradient: the badge's four colors lie under it as one sample set. The buy panel is solid white, because forms never sit on glass.
 
 **What moves**
 - On load, once: lanyard and badge drop in and settle with one pendulum swing (800ms).
 - Desktop pointer over the hero: the badge tilts up to 4deg and a highlight follows, until the pointer leaves.
-- Color choices glide the strap, including the bundle under the buy panel.
+- Badge color choices glide the strap color.
 - On scroll: the break-away clasp pulls apart; sample strands slide out of the color card.
 - Reduced motion: final states only; the drawer fades.
 

@@ -371,7 +371,8 @@ function renderTicket(s) {
     if (motion) {
       el.classList.add('is-out');
       Object.assign(el.style, { position: 'absolute', top: `${el.offsetTop}px`, left: 0, right: 0 });
-      el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'linear' }).onfinish = () => el.remove();
+      el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'linear', fill: 'forwards' });
+      setTimeout(() => el.remove(), 160);
     } else el.remove();
   }
   let prev = null;
@@ -513,19 +514,22 @@ function openCart(trigger) {
 function closeCart() {
   if (!dialog.open || dialog.dataset.closing) return;
   dialog.dataset.closing = '1';
-  const out = dialog.animate(
+  const ms = reduced() ? 150 : 200;
+  dialog.animate(
     reduced() ? [{ opacity: 1 }, { opacity: 0 }] : [{ transform: 'none' }, { transform: 'translateX(100%)' }],
-    { duration: reduced() ? 150 : 200, easing: EASE.in },
+    { duration: ms, easing: EASE.in, fill: 'forwards' },
   );
-  out.onfinish = () => {
+  // Close on a timer rather than the animation's finish event, which a busy or background tab can hold back.
+  setTimeout(() => {
     delete dialog.dataset.closing;
+    dialog.getAnimations().forEach((a) => a.cancel());
     dialog.close();
     document.documentElement.classList.remove('is-locked');
     drawerOpen = false;
     syncBar();
     returnFocus?.focus();
     if (headerPending) setTimeout(paintHeader, 120);
-  };
+  }, ms);
 }
 dialog.addEventListener('cancel', (e) => { e.preventDefault(); closeCart(); }); // Escape
 dialog.addEventListener('click', (e) => {
@@ -614,11 +618,12 @@ document.addEventListener('focusin', (e) => {
   const el = e.target;
   if (!(el instanceof Element) || el.closest('#tally, #buybar, dialog')) return;
   requestAnimationFrame(() => {
+    if (!el.matches(':focus-visible')) return; // keyboard focus only, so a mouse click never moves the page
     const tally = $('#tally');
     const cover = tally.classList.contains('is-stuck') && builder.contains(el) ? tally : (bar.classList.contains('is-hidden') ? null : bar);
     if (!cover) return;
     const overlap = el.getBoundingClientRect().bottom - cover.getBoundingClientRect().top;
-    if (overlap > -8) scrollBy(0, overlap + 24);
+    if (overlap > -8) scrollBy({ top: overlap + 24, behavior: 'instant' });
   });
 });
 // Desktop: the tally pins to the bottom while the sheet scrolls; a shadow appears only while it is pinned.
