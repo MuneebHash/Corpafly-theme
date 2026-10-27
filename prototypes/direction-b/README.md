@@ -6,6 +6,8 @@
 
 **Motion.** Once on load, in 1.1 s, the mark's six strokes slide in along their own axes, then a blue strap draws itself through the gap between the C and the F and its J-hook drops in. Plates wipe in on a 45-degree edge on first view, spec rows take a 45-degree highlight on hover, and a chosen color tile settles with a small spring. Reduced motion shows the final state.
 
-**Why it fits.** Office managers, schools and event teams buy on facts. Each plate puts pack, colors, price and price per lanyard in one table, the order bar and the planner turn needs into packs fast, and nothing decorates without a job.
+**Why it fits.** Office managers, schools and event teams buy on facts. Each plate puts pack, colors, price and price per lanyard in one table, and the order bar and planner turn needs into packs fast.
 
-**Fonts.** Subset cuts of Archivo and Martian Mono (OFL 1.1, licences in `fonts/`) keep the first screen at 31 KB of type.
+**Brand note.** The hero uses the mark's geometry as a cropped background graphic in a dark key (deep teal C, black F). This brand device needs Muneeb's approval; the header logo keeps its approved colors.
+
+**Fonts.** Trimmed OFL cuts of Archivo and Martian Mono, licences in `fonts/`.

@@ -37,6 +37,8 @@ const listNames = (keys) => {
 };
 
 const TYPE_NAME = { standard: 'Lanyard', breakaway: 'Break-Away Lanyard' };
+// "Break-Away" must never split across lines; Hanken has no non-breaking hyphen glyph, so wrap it in a nowrap span.
+const nb = (text) => text.replace(/Break-Away|Break-away/g, '<span class="nb">$&</span>');
 const COLOR_KEYS = Object.keys(COLORS);
 const MAX_PACKS = 99;
 const productOf = (type) => PRODUCTS.find((p) => p.line === type);
@@ -133,7 +135,7 @@ class Roller {
     this.vis.replaceChildren(...[...text].map((ch) => {
       const cell = document.createElement('span');
       if (!isDigit(ch)) {
-        cell.className = ch === '.' || ch === ',' ? 'roll__ch pt' : 'roll__ch'; // mono stops are digit-wide; trim them
+        cell.className = 'roll__ch';
         cell.textContent = ch;
         return cell;
       }
@@ -158,9 +160,8 @@ class Roller {
 }
 const rollers = Object.fromEntries($$('[data-roll]').map((el) => [el.dataset.roll, new Roller(el)]));
 
-// ?capture puts pinned and fixed parts back in the flow for full-page screenshots (see styles.css).
-const capture = new URLSearchParams(location.search).has('capture');
-document.documentElement.classList.toggle('is-capture', capture);
+// ?capture puts sticky and fixed parts back in the flow for full-page screenshots (see styles.css).
+document.documentElement.classList.toggle('is-capture', new URLSearchParams(location.search).has('capture'));
 
 /* ---------- 3. Order builder ---------- */
 const order = { type: 'standard', size: 100, qty: { black: 1 } };
@@ -207,8 +208,8 @@ function renderRows() {
   const wide = packOf('breakaway', 25);
   const extra = wide.colors.filter((c) => !colors.includes(c));
   moreBtn.hidden = extra.length === 0;
-  moreBtn.textContent = order.type === 'standard'
-    ? `${listNames(extra)} come in the Break-Away 25 pack`
+  moreBtn.innerHTML = order.type === 'standard'
+    ? `${listNames(extra)} come in the ${nb('Break-Away')} 25 pack`
     : `${listNames(extra)} come in the 25 pack`;
 }
 
@@ -272,7 +273,7 @@ function update({ announce = true } = {}) {
   rollers['bar-total'].set(usd(s.cents));
   $('#bar-unit').textContent = usd(s.unit);
   $('#ticket-count').textContent = `${plural(s.packs, 'pack')}, ${plural(s.lanyards, 'lanyard')}`;
-  $('#ticket-product').textContent = $('#desk-product').textContent = `${TYPE_NAME[s.type]}, ${s.size} pack`;
+  $('#ticket-product').innerHTML = $('#desk-product').innerHTML = `${nb(TYPE_NAME[s.type])}, ${s.size} pack`;
   for (const btn of [$('#add'), $('#bar-add')]) btn.setAttribute('aria-disabled', String(s.packs === 0));
   if (copyStatus.classList.contains('is-active')) { // a copied link no longer matches the order
     copyStatus.textContent = COPY_HELP;
@@ -309,7 +310,7 @@ const stage = $('#stage');
 
 function hangEl(color, type) {
   const el = document.createElement('div');
-  el.className = 'hang';
+  el.className = 'hang is-ghost';
   el.dataset.color = color;
   el.style.setProperty('--strap', COLORS[color].hex);
   el.innerHTML = `<div class="hang__tag"><span class="hang__count num"></span><span class="hang__name">${COLORS[color].name}</span></div>
@@ -323,26 +324,41 @@ function drawLanyard(el, type, animate = true) {
   box.innerHTML = hangingLanyard({ type, title: TYPE_NAME[type] }).svg;
   if (animate && !reduced()) box.animate([{ opacity: 0.3 }, { opacity: 1 }], { duration: 240, easing: EASE.standard });
 }
-const liveHangs = () => $$('.hang:not(.is-out)', stage);
+const liveHangs = () => $$('.hang:not(.is-out)', stage)
+  .sort((a, b) => COLOR_KEYS.indexOf(a.dataset.color) - COLOR_KEYS.indexOf(b.dataset.color));
 
+// Every colour the current type and pack comes in hangs on its own peg: ordered colours solid with their pack count,
+// the rest as faint ghosts, so the desk shows what is possible. Slots move only when the type or pack changes.
 function renderStage(s) {
+  const qty = new Map(s.lines.map((l) => [l.color, l.packs]));
   const live = new Map(liveHangs().map((el) => [el.dataset.color, el]));
   for (const [color, el] of live) {
-    if (s.lines.some((l) => l.color === color)) continue;
-    el.classList.add('is-out'); // lifts and fades (CSS), then leaves the DOM
+    if (s.pack.colors.includes(color)) continue;
+    el.classList.add('is-out'); // the new pack is not made in this colour: it lifts out and leaves the DOM
     setTimeout(() => el.remove(), reduced() ? 160 : 360);
   }
-  const items = s.lines.map((l) => {
-    let el = live.get(l.color);
-    if (!el) stage.append(el = hangEl(l.color, s.type));
+  const motion = 'ready' in stage.dataset && !reduced();
+  const items = s.pack.colors.map((color) => {
+    let el = live.get(color);
+    if (!el) stage.append(el = hangEl(color, s.type));
     else if (el.dataset.type !== s.type) drawLanyard(el, s.type);
-    $('.hang__count', el).textContent = `×${l.packs}`;
+    const n = qty.get(color) || 0;
+    const wasGhost = el.classList.contains('is-ghost');
+    el.classList.toggle('is-ghost', !n);
+    $('.hang__count', el).textContent = n ? `×${n}` : '';
+    if (motion && wasGhost !== !n) {
+      // Ordered: it drops onto its peg as it firms up. Removed: a small unhooking lift as it fades back to a ghost.
+      $('.hang__ly', el).animate(n
+        ? [{ transform: 'translateY(-22px)' }, { transform: 'none' }]
+        : [{ transform: 'none' }, { transform: 'translateY(-8px)' }, { transform: 'none' }],
+      { duration: 320, easing: n ? SPRING : EASE.standard });
+    }
     return el;
   });
   layoutStage(items);
 }
-// Spread the lanyards evenly. One sits left of centre, clear of the receipt; more colours spread the group to
-// the full width, so the right-hand ones hang behind the glass and colour it.
+// Spread the pegs evenly. Few slots sit left of centre, clear of the receipt; more slots spread to the full width,
+// so the right-hand lanyards hang behind the glass and colour it.
 function layoutStage(items = liveHangs()) {
   const n = items.length;
   if (!n) return;
@@ -428,7 +444,7 @@ function renderCart() {
     return `<li class="cline" data-i="${i}" style="--strap:${hex}">
       <span class="chip" aria-hidden="true"></span>
       <div>
-        <p class="cline__title">${TYPE_NAME[item.type]}</p>
+        <p class="cline__title">${nb(TYPE_NAME[item.type])}</p>
         <p class="cline__meta">${name}, ${item.size} pack</p>
         <p class="cline__unit"><span class="num">${usd(unitCents(pack))}</span> per lanyard, <span class="num cline__count">${num(item.packs * item.size)}</span> lanyards</p>
       </div>
@@ -612,55 +628,67 @@ function syncBar() {
 }
 new IntersectionObserver(([e]) => { tallyInView = e.isIntersecting; syncBar(); }).observe($('#tally'));
 wideQuery.addEventListener('change', syncBar);
-// WCAG 2.4.11: a focused control must never sit under the pinned tally (desktop) or the phone bar. The browser
-// only scrolls for controls it thinks are off screen, so after it has done its own scrolling, nudge the page.
+// WCAG 2.4.11: a focused control must never sit under the phone bar. The browser only scrolls for controls it
+// thinks are off screen, so after it has done its own scrolling, nudge the page (keyboard focus only).
 document.addEventListener('focusin', (e) => {
   const el = e.target;
-  if (!(el instanceof Element) || el.closest('#tally, #buybar, dialog')) return;
+  if (!(el instanceof Element) || el.closest('#buybar, dialog')) return;
   requestAnimationFrame(() => {
-    if (!el.matches(':focus-visible')) return; // keyboard focus only, so a mouse click never moves the page
-    const tally = $('#tally');
-    const cover = tally.classList.contains('is-stuck') && builder.contains(el) ? tally : (bar.classList.contains('is-hidden') ? null : bar);
-    if (!cover) return;
-    const overlap = el.getBoundingClientRect().bottom - cover.getBoundingClientRect().top;
+    if (!el.matches(':focus-visible') || bar.classList.contains('is-hidden')) return;
+    const overlap = el.getBoundingClientRect().bottom - bar.getBoundingClientRect().top;
     if (overlap > -8) scrollBy({ top: overlap + 24, behavior: 'instant' });
   });
 });
-// Desktop: the tally pins to the bottom while the sheet scrolls; a shadow appears only while it is pinned.
-if (!capture) {
-  new IntersectionObserver(([e]) => {
-    $('#tally').classList.toggle('is-stuck', !e.isIntersecting && e.boundingClientRect.top > 0);
-  }).observe($('#tally-end'));
-}
 
 /* ---------- 8a. Finder ----------
-   Honest maths only: for each pack that comes in enough colours, packs per colour = ceil(people per group / pack
-   size), and the lowest total wins (ties go to fewer spare lanyards, then the standard Lanyard). Adults at work can
-   wear either type; kids or risky settings get Break-Away only. No discounts are implied. */
+   Honest maths, shown in full: packs per colour = ceil(people per colour group / pack size), and colour groups split
+   the packs across colours. No discounts are implied.
+   - Adults at work: the standard Lanyard in 100 packs (rounded up), with Break-Away as the alternative. Under 60 people
+     per colour group the 25 and 50 Break-Away packs fit better, so they lead and the Lanyard becomes the alternative.
+     5 or 6 groups need the Break-Away 25 pack, the only pack made in more than 4 colors.
+   - Kids, or anywhere a caught strap is a risk: always Break-Away, the cheapest pack size that covers the groups. */
 const finderForm = $('#finder-form');
 const peopleStepper = $('#people').closest('.stepper');
 let people = 80;
 let currentRec = null;
 let lastSig = '';
 
+const SMALL_GROUP = 60; // below this many people per colour, a 100 pack leaves too many spare
 function recommend({ people: n, wear, groups }) {
   const colorsNeeded = Math.max(1, groups);
   const perColor = Math.ceil(n / colorsNeeded);
-  const types = wear === 'safety' ? ['breakaway'] : ['standard', 'breakaway'];
-  const options = types.flatMap((type) => productOf(type).packs
-    .filter((pack) => pack.colors.length >= colorsNeeded)
-    .map((pack) => {
-      const each = Math.ceil(perColor / pack.size);
-      const packs = each * colorsNeeded;
-      return { type, pack, each, packs, lanyards: packs * pack.size, cents: packs * toCents(pack.price), colors: pack.colors.slice(0, colorsNeeded) };
-    }))
-    .sort((a, b) => a.cents - b.cents || a.lanyards - b.lanyards || (a.type === 'standard' ? -1 : 1));
-  const best = options[0];
+  const option = (type, pack) => {
+    const each = Math.ceil(perColor / pack.size);
+    const packs = each * colorsNeeded;
+    return { type, pack, each, packs, lanyards: packs * pack.size, cents: packs * toCents(pack.price), colors: pack.colors.slice(0, colorsNeeded) };
+  };
+  // Break-Away packs made in enough colours, cheapest first (ties: fewer spare lanyards).
+  const breakaway = (maxSize = Infinity) => productOf('breakaway').packs
+    .filter((pack) => pack.colors.length >= colorsNeeded && pack.size <= maxSize)
+    .map((pack) => option('breakaway', pack))
+    .sort((a, b) => a.cents - b.cents || a.lanyards - b.lanyards);
+  const lanyard = productOf('standard').packs[0]; // the 100 pack, in 4 colors
+  const scope = groups ? `${groups} groups of about ${num(perColor)}` : (n === 1 ? '1 person' : `${num(n)} people`);
   const why = [];
-  if (wear === 'safety') why.push('Break-away, because the clasp opens if the strap is caught.');
-  why.push(`Lowest total that covers ${groups ? `${groups} groups of about ${num(perColor)}` : (n === 1 ? '1 person' : `${num(n)} people`)}.`);
-  if (options.length === 1) why.push(`Only the ${best.pack.size} pack comes in ${colorsNeeded} colors.`);
-  const alt = options.find((o) => o.type !== best.type) || options[1];
+  let best;
+  let alt = null;
+  if (wear === 'safety') {
+    const options = breakaway();
+    [best, alt = null] = options;
+    why.push('Break-away, because the clasp opens if the strap is caught.', `Lowest total that covers ${scope}.`);
+    if (options.length === 1 && colorsNeeded > 2) why.push(`Only the 25 pack comes in ${colorsNeeded} colors.`);
+  } else if (colorsNeeded > lanyard.colors.length) {
+    [best] = breakaway();
+    why.push(`The Lanyard comes in ${lanyard.colors.length} colors. For ${colorsNeeded} groups, the Break-Away 25 pack has all 6.`);
+  } else if (perColor < SMALL_GROUP) {
+    [best] = breakaway(50);
+    alt = option('standard', lanyard);
+    why.push(`The Lanyard only comes in 100 packs, so for ${scope} the Break-Away ${best.pack.size} pack fits better.`);
+  } else {
+    best = option('standard', lanyard);
+    [alt] = breakaway();
+    why.push(`The standard Lanyard, in 100 packs rounded up to cover ${scope}.`);
+  }
   return { ...best, people: n, spare: best.lanyards - n, why, alt };
 }
 
@@ -673,15 +701,15 @@ function renderResult({ animate = true } = {}) {
   const chips = r.colors.map((c) => `<span class="result__color" style="--strap:${COLORS[c].hex}"><span class="chip chip--sm" aria-hidden="true"></span>${COLORS[c].name}</span>`).join('');
   const who = r.people === 1 ? '1 person' : `${num(r.people)} people`;
   $('#result-body').innerHTML = `
-    <p class="result__order"><span class="num">${r.packs} ×</span> ${TYPE_NAME[r.type]}, ${r.pack.size} pack</p>
+    <p class="result__order"><span class="num">${r.packs} ×</span> ${nb(TYPE_NAME[r.type])}, ${r.pack.size} pack</p>
     <p class="result__colors"><span>${r.colors.length > 1 ? `${plural(r.each, 'pack')} each in` : 'in'}</span>${chips}</p>
     <dl class="result__facts">
       <div><dt>Lanyards</dt><dd><span class="num">${num(r.lanyards)}</span> for ${who}${r.spare ? `, <span class="num">${num(r.spare)}</span> spare` : ''}</dd></div>
       <div><dt>Per lanyard</dt><dd class="num">${usd(unitCents(r.pack))}</dd></div>
       <div><dt>Total</dt><dd class="num result__total">${usd(r.cents)}</dd></div>
     </dl>
-    <p class="result__why">${r.why.join(' ')}</p>
-    ${r.alt ? `<p class="result__alt">Also fits: ${r.alt.packs} × ${TYPE_NAME[r.alt.type]}, ${r.alt.pack.size} pack. ${usd(r.alt.cents)}, ${num(r.alt.lanyards - r.people)} spare.</p>` : ''}`;
+    <p class="result__why">${nb(r.why.join(' '))}</p>
+    ${r.alt ? `<p class="result__alt">Also fits: ${r.alt.packs} × ${nb(TYPE_NAME[r.alt.type])}, ${r.alt.pack.size} pack. ${usd(r.alt.cents)}, ${num(r.alt.lanyards - r.people)} spare.</p>` : ''}`;
   renderStrands(r.colors);
   if (!animate) return;
   const rise = reduced() ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }];
